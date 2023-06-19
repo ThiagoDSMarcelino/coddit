@@ -10,7 +10,7 @@ CREATE TABLE Users (
 	Username VARCHAR(50) UNIQUE NOT NULL,
 	Password VARCHAR(100) NOT NULL,
 	DateBirth DATE NOT NULL,
-	Picture IMAGE NULL,
+	Picture BINARY(MAX) NULL, /* TODO */
 	IsActive BIT DEFAULT 0,
 	CreatedAt DATE DEFAULT GETDATE(),
 );
@@ -30,7 +30,7 @@ CREATE TABLE Posts (
     ForumID BIGINT REFERENCES Forums(ID) NOT NULL,
     Title VARCHAR(50) NOT NULL,
     Message VARCHAR(255) NOT NULL,
-    Attachment VARCHAR(MAX) NULL,
+    Attachment VARCHAR(MAX) NULL, /* TODO */
     Likes INT DEFAULT 0,
 	CreatedAt DATE DEFAULT GETDATE()
 );
@@ -51,6 +51,7 @@ CREATE TABLE Roles (
 	ID BIGINT PRIMARY KEY IDENTITY(1,1),
     ForumID BIGINT REFERENCES Forums(ID) NOT NULL,
     Title VARCHAR(50) UNIQUE NOT NULL,
+    /* TODO */
     CanSeePosts BIT DEFAULT 1,
     CanCreatePosts BIT DEFAULT 0,
     CanInteract BIT DEFAULT 1,
