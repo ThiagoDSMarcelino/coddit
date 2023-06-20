@@ -11,6 +11,4 @@ import { NgIf } from '@angular/common';
   standalone: true,
   imports: [MatToolbarModule, MatButtonModule, MatIconModule, NgIf],
 })
-export class NavbarComponent {
-  isLogged: boolean = false;
-}
+export class NavbarComponent { }

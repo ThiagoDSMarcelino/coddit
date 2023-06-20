@@ -1,5 +1,5 @@
-# Created by https://www.toptal.com/developers/gitignore/api/visualstudiocode,csharp,angular,web
-# Edit at https://www.toptal.com/developers/gitignore?templates=visualstudiocode,csharp,angular,web
+# Created by https://www.toptal.com/developers/gitignore/api/visualstudiocode,csharp,angular,web,database
+# Edit at https://www.toptal.com/developers/gitignore?templates=visualstudiocode,csharp,angular,web,database
 
 ### Angular ###
 ## Angular ##
@@ -429,6 +429,15 @@ FodyWeavers.xsd
 # JetBrains Rider
 *.sln.iml
 
+### Database ###
+*.accdb
+*.db
+*.dbf
+*.mdb
+*.sqlite3
+*.db-shm
+*.db-wal
+
 ### VisualStudioCode ###
 !.vscode/*.code-snippets
 
@@ -457,4 +466,6 @@ FodyWeavers.xsd
 *.wat
 *.xhtml
 
-# End of https://www.toptal.com/developers/gitignore/api/visualstudiocode,csharp,angular,web
+# End of https://www.toptal.com/developers/gitignore/api/visualstudiocode,csharp,angular,web,database
+
+.env
