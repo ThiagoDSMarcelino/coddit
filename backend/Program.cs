@@ -3,6 +3,7 @@ using Microsoft.AspNetCore.Builder;
 using Microsoft.Extensions.Hosting;
 using Securitas.JWT;
 using System.Text;
+using Backend;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -22,23 +23,27 @@ builder.Services.AddCors(options =>
     });
 });
 
+EnvironmentVariable variable = new EnvironmentVariable(".env");
+var secretKey = variable.Get<string>("SECRET_PASSWORD");
+
 builder.Services.AddTransient<IPasswordProvider>(
-    p => new ConstPasswordProvider("jhagskg31jk1bvjkgvakjlasdf")
+    p => new ConstPasswordProvider(secretKey)
+);
+
+builder.Services.AddTransient<Encoding>(
+    p => Encoding.UTF8
 );
 
 builder.Services.AddTransient<IJWTService>(
     p => new JWTService(
         p.GetService<IPasswordProvider>()!,
-        Encoding.UTF8,
+        p.GetService<Encoding>()!,
         HashAlgorithmType.HS256
     )
 );
 
 builder.Services.AddScoped<CodditContext>();
 builder.Services.AddTransient<IRepository<User>, UserRepository>();
-builder.Services.AddTransient<Encoding>(
-    p => Encoding.UTF8
-);
 
 var app = builder.Build();
 

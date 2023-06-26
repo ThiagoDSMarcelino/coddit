@@ -27,7 +27,7 @@ public class StudentController : ControllerBase
 
         await repo.Add(user);
 
-        return Ok();
+        return Ok(); // TODO change Ok to Created
     }
 
     private string HashPassword(string password, string salt)
