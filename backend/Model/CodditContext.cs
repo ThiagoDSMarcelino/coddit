@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using Microsoft.EntityFrameworkCore;
 
-namespace backend.Model;
+namespace Backend.Model;
 
 public partial class CodditContext : DbContext
 {
@@ -41,7 +41,7 @@ public partial class CodditContext : DbContext
     {
         modelBuilder.Entity<Comment>(entity =>
         {
-            entity.HasKey(e => e.Id).HasName("PK__Comments__3214EC27B517499F");
+            entity.HasKey(e => e.Id).HasName("PK__Comments__3214EC27F33A39E4");
 
             entity.Property(e => e.Id).HasColumnName("ID");
             entity.Property(e => e.CommentId).HasColumnName("CommentID");
@@ -71,7 +71,7 @@ public partial class CodditContext : DbContext
 
         modelBuilder.Entity<Forum>(entity =>
         {
-            entity.HasKey(e => e.Id).HasName("PK__Forums__3214EC27479628D8");
+            entity.HasKey(e => e.Id).HasName("PK__Forums__3214EC27A32350D0");
 
             entity.Property(e => e.Id).HasColumnName("ID");
             entity.Property(e => e.CreatedAt)
@@ -89,7 +89,7 @@ public partial class CodditContext : DbContext
 
         modelBuilder.Entity<HasPermission>(entity =>
         {
-            entity.HasKey(e => e.Id).HasName("PK__HasPermi__3214EC27B5F8F80A");
+            entity.HasKey(e => e.Id).HasName("PK__HasPermi__3214EC278A0C9974");
 
             entity.ToTable("HasPermission");
 
@@ -110,7 +110,7 @@ public partial class CodditContext : DbContext
 
         modelBuilder.Entity<Member>(entity =>
         {
-            entity.HasKey(e => e.Id).HasName("PK__Members__3214EC27A6DA98C4");
+            entity.HasKey(e => e.Id).HasName("PK__Members__3214EC2757CE55FC");
 
             entity.Property(e => e.Id).HasColumnName("ID");
             entity.Property(e => e.ForumId).HasColumnName("ForumID");
@@ -135,9 +135,9 @@ public partial class CodditContext : DbContext
 
         modelBuilder.Entity<Permission>(entity =>
         {
-            entity.HasKey(e => e.Id).HasName("PK__Permissi__3214EC27DA9F9F50");
+            entity.HasKey(e => e.Id).HasName("PK__Permissi__3214EC27FE52C326");
 
-            entity.HasIndex(e => e.Title, "UQ__Permissi__2CB664DC5F6ABD96").IsUnique();
+            entity.HasIndex(e => e.Title, "UQ__Permissi__2CB664DC21A1B2E9").IsUnique();
 
             entity.Property(e => e.Id).HasColumnName("ID");
             entity.Property(e => e.Title)
@@ -148,7 +148,7 @@ public partial class CodditContext : DbContext
 
         modelBuilder.Entity<Post>(entity =>
         {
-            entity.HasKey(e => e.Id).HasName("PK__Posts__3214EC271F7F71CD");
+            entity.HasKey(e => e.Id).HasName("PK__Posts__3214EC278DAD719D");
 
             entity.Property(e => e.Id).HasColumnName("ID");
             entity.Property(e => e.CreatedAt)
@@ -178,7 +178,7 @@ public partial class CodditContext : DbContext
 
         modelBuilder.Entity<Role>(entity =>
         {
-            entity.HasKey(e => e.Id).HasName("PK__Roles__3214EC2758CF0BEE");
+            entity.HasKey(e => e.Id).HasName("PK__Roles__3214EC272B2E0274");
 
             entity.Property(e => e.Id).HasColumnName("ID");
             entity.Property(e => e.ForumId).HasColumnName("ForumID");
@@ -197,17 +197,17 @@ public partial class CodditContext : DbContext
 
         modelBuilder.Entity<User>(entity =>
         {
-            entity.HasKey(e => e.Id).HasName("PK__Users__3214EC27D0D5136A");
+            entity.HasKey(e => e.Id).HasName("PK__Users__3214EC27B716CBB6");
 
-            entity.HasIndex(e => e.Username, "UQ__Users__536C85E4937F7FC9").IsUnique();
+            entity.HasIndex(e => e.Username, "UQ__Users__536C85E4B51C7BAE").IsUnique();
 
-            entity.HasIndex(e => e.Email, "UQ__Users__A9D10534025BCFC4").IsUnique();
+            entity.HasIndex(e => e.Email, "UQ__Users__A9D10534A4FAA7F9").IsUnique();
 
             entity.Property(e => e.Id).HasColumnName("ID");
+            entity.Property(e => e.BirthDate).HasColumnType("date");
             entity.Property(e => e.CreatedAt)
                 .HasDefaultValueSql("(getdate())")
                 .HasColumnType("date");
-            entity.Property(e => e.DateBirth).HasColumnType("date");
             entity.Property(e => e.Email)
                 .IsRequired()
                 .HasMaxLength(100)
@@ -229,7 +229,7 @@ public partial class CodditContext : DbContext
 
         modelBuilder.Entity<Vote>(entity =>
         {
-            entity.HasKey(e => e.Id).HasName("PK__Vote__3214EC2768F195AA");
+            entity.HasKey(e => e.Id).HasName("PK__Vote__3214EC27DF246883");
 
             entity.ToTable("Vote");
 

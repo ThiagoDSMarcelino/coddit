@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 
-namespace backend.Model;
+namespace Backend.Model;
 
 public partial class Post
 {

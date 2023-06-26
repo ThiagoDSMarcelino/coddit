@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 
-namespace backend.Model;
+namespace Backend.Model;
 
 public partial class User
 {
@@ -15,7 +15,7 @@ public partial class User
 
     public string Salt { get; set; }
 
-    public DateTime DateBirth { get; set; }
+    public DateTime BirthDate { get; set; }
 
     public byte[] Picture { get; set; }
 
