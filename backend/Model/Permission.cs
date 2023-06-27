@@ -1,7 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-
-namespace Backend.Model;
+﻿namespace Backend.Model;
 
 public partial class Permission
 {

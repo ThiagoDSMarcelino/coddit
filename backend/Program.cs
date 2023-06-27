@@ -2,8 +2,8 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.Extensions.Hosting;
 using Securitas.JWT;
+using Securitas;
 using System.Text;
-using Backend;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -23,11 +23,15 @@ builder.Services.AddCors(options =>
     });
 });
 
-EnvironmentVariable variable = new EnvironmentVariable(".env");
-var secretKey = variable.Get<string>("SECRET_PASSWORD");
+builder.Services.AddTransient<EnvironmentFile>(
+    p => new EnvironmentFile(".env")
+);
 
 builder.Services.AddTransient<IPasswordProvider>(
-    p => new ConstPasswordProvider(secretKey)
+    p => new ConstPasswordProvider(
+        p.GetService<EnvironmentFile>()
+            .Get("SECRET_PASSWORD")
+    )
 );
 
 builder.Services.AddTransient<Encoding>(
@@ -43,13 +47,12 @@ builder.Services.AddTransient<IJWTService>(
 );
 
 builder.Services.AddScoped<CodditContext>();
-builder.Services.AddTransient<IRepository<User>, UserRepository>();
+builder.Services.AddTransient<IRepository<User, long>, UserRepository>();
 
 var app = builder.Build();
 
 app.UseCors();
 
-// Configure the HTTP request pipeline.
 if (app.Environment.IsDevelopment())
 {
     app.UseSwagger();

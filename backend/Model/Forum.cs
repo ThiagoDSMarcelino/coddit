@@ -1,7 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-
-namespace Backend.Model;
+﻿namespace Backend.Model;
 
 public partial class Forum
 {
@@ -11,7 +8,7 @@ public partial class Forum
 
     public string Description { get; set; }
 
-    public DateTime? CreatedAt { get; set; }
+    public DateTime CreatedAt { get; set; }
 
     public virtual ICollection<Member> Members { get; set; } = new List<Member>();
 

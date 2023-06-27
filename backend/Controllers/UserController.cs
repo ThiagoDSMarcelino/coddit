@@ -1,6 +1,5 @@
-using Microsoft.AspNetCore.Cors;
-using Microsoft.AspNetCore.Mvc;
 using System.Security.Cryptography;
+using Securitas.JWT;
 using System.Text;
 
 namespace Backend.Controllers;
@@ -12,22 +11,39 @@ public class StudentController : ControllerBase
 {
     private readonly Encoding _encoding;
 
-    StudentController(Encoding encoding)
+
+    public StudentController(Encoding encoding)
         => _encoding = encoding;
 
     [HttpPost("signup")]
     public async Task<IActionResult> Signup(
         [FromBody] User user,
-        [FromServices] IRepository<User> repo)
+        [FromServices] IRepository<User, long> repo,
+        [FromServices] IJWTService jwt)
     {
-        var salt = GenerateSalt();
+        var errors = new List<string>();
+        var usedEmail = await repo.Exist(u => u.Email == user.Email);
+        var usedUsername = await repo.Exist(u => u.Username == user.Username);
+        
+        if (usedEmail)
+            errors.Add("E-mail already used");
+
+        if (usedUsername)
+            errors.Add("Username already used");
+
+        if (errors.Any())
+            return BadRequest(errors);
+
+        var salt = GenerateSalt(16);
 
         user.Password = HashPassword(user.Password, salt);
         user.Salt = salt;
 
         await repo.Add(user);
 
-        return Ok(); // TODO change Ok to Created
+        var token = jwt.GenerateToken(user);
+
+        return Created("http://localhost:4200/", token);
     }
 
     private string HashPassword(string password, string salt)
@@ -53,11 +69,12 @@ public class StudentController : ControllerBase
         return concatBytes;
     }
 
-    private string GenerateSalt()
+    private string GenerateSalt(int saltLength)
     {
-        byte[] randBytes = new byte[12];
+        var length = (int)MathF.Floor(saltLength * (6 / 8));
+        byte[] randBytes = new byte[length];
         Random.Shared.NextBytes(randBytes);
-        var salt = _encoding.GetString(randBytes);
+        var salt = Convert.ToBase64String(randBytes);
 
         return salt;
     }

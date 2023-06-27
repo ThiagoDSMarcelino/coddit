@@ -1,15 +1,16 @@
-import { UserService } from 'src/app/Services/UserService/user.service';
 import { FormsModule } from "@angular/forms";
-import { Component, runInInjectionContext } from '@angular/core';
+import { Component } from '@angular/core';
+
+import { UserService } from 'src/app/Services/UserService/user.service';
 
 @Component({
-  selector: 'app-signup',
-  templateUrl: './signup.component.html',
-  styleUrls: ['./signup.component.css'],
+  selector: 'app-sign-up',
+  templateUrl: './sign-up.component.html',
+  styleUrls: ['./sign-up.component.css'],
   standalone: true,
   imports: [FormsModule],
 })
-export class SignupComponent {
+export class SignUpComponent {
 
   constructor(private service: UserService) { }
 
@@ -21,15 +22,19 @@ export class SignupComponent {
 
   SubmitForm() {
     if (!this.Agreed)
-      return;
+      return
 
     let user = {
       Email: this.Email,
       Username: this.Username,
       Password: this.Password,
       BirthDate: this.BirthDate
-    };
-    
-    this.service.create(user);
+    }
+
+    this.service.create(user).subscribe({
+      error: (e) => console.log(e),
+      next: (n) => console.log(n),
+      complete: () => console.info('complete')
+    })
   }
 }

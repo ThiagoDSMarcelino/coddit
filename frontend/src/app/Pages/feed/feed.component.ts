@@ -1,7 +1,7 @@
+import { CommonModule } from '@angular/common';
 import { Component } from '@angular/core';
 
 import { PostComponent } from '../../Components/post/post.component';
-import { CommonModule } from '@angular/common';
 
 @Component({
   selector: 'app-feed',

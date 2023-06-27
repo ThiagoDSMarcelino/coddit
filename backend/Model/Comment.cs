@@ -1,7 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-
-namespace Backend.Model;
+﻿namespace Backend.Model;
 
 public partial class Comment
 {
@@ -15,7 +12,7 @@ public partial class Comment
 
     public string Message { get; set; }
 
-    public DateTime? CreatedAt { get; set; }
+    public DateTime CreatedAt { get; set; }
 
     public virtual Comment CommentNavigation { get; set; }
 

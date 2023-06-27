@@ -1,7 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-
-namespace Backend.Model;
+﻿namespace Backend.Model;
 
 public partial class Role
 {
@@ -11,9 +8,9 @@ public partial class Role
 
     public string Title { get; set; }
 
-    public bool? IsOwner { get; set; }
+    public bool IsOwner { get; set; }
 
-    public bool? IsDefault { get; set; }
+    public bool IsDefault { get; set; }
 
     public virtual Forum Forum { get; set; }
 

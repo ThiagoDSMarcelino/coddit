@@ -1,19 +1,19 @@
-﻿using System;
-using System.Collections.Generic;
-using Microsoft.EntityFrameworkCore;
+﻿using Securitas;
 
 namespace Backend.Model;
 
 public partial class CodditContext : DbContext
 {
-    public CodditContext()
-    {
-    }
+    private readonly EnvironmentFile _env;
 
-    public CodditContext(DbContextOptions<CodditContext> options)
+    public CodditContext(EnvironmentFile env)
+        => _env = env;
+
+    public CodditContext(
+        DbContextOptions<CodditContext> options,
+        EnvironmentFile env)
         : base(options)
-    {
-    }
+        => _env = env;
 
     public virtual DbSet<Comment> Comments { get; set; }
 
@@ -34,17 +34,13 @@ public partial class CodditContext : DbContext
     public virtual DbSet<Vote> Votes { get; set; }
 
     protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
-    {
-        EnvironmentVariable variable = new EnvironmentVariable(".env");
-        var db = variable.Get<string>("DATABASE");
-        optionsBuilder.UseSqlServer($"Data Source={db};Initial Catalog=Coddit;Integrated Security=True;TrustServerCertificate=true");
-    }
+        => optionsBuilder.UseSqlServer($"Data Source={_env.Get("DATABASE")};Initial Catalog=Coddit;Integrated Security=True;TrustServerCertificate=true");
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
         modelBuilder.Entity<Comment>(entity =>
         {
-            entity.HasKey(e => e.Id).HasName("PK__Comments__3214EC27F33A39E4");
+            entity.HasKey(e => e.Id).HasName("PK__Comments__3214EC273CC22DCE");
 
             entity.Property(e => e.Id).HasColumnName("ID");
             entity.Property(e => e.CommentId).HasColumnName("CommentID");
@@ -74,7 +70,7 @@ public partial class CodditContext : DbContext
 
         modelBuilder.Entity<Forum>(entity =>
         {
-            entity.HasKey(e => e.Id).HasName("PK__Forums__3214EC27A32350D0");
+            entity.HasKey(e => e.Id).HasName("PK__Forums__3214EC27D793BDAA");
 
             entity.Property(e => e.Id).HasColumnName("ID");
             entity.Property(e => e.CreatedAt)
@@ -92,7 +88,7 @@ public partial class CodditContext : DbContext
 
         modelBuilder.Entity<HasPermission>(entity =>
         {
-            entity.HasKey(e => e.Id).HasName("PK__HasPermi__3214EC278A0C9974");
+            entity.HasKey(e => e.Id).HasName("PK__HasPermi__3214EC27B1E07030");
 
             entity.ToTable("HasPermission");
 
@@ -113,7 +109,7 @@ public partial class CodditContext : DbContext
 
         modelBuilder.Entity<Member>(entity =>
         {
-            entity.HasKey(e => e.Id).HasName("PK__Members__3214EC2757CE55FC");
+            entity.HasKey(e => e.Id).HasName("PK__Members__3214EC27579187C4");
 
             entity.Property(e => e.Id).HasColumnName("ID");
             entity.Property(e => e.ForumId).HasColumnName("ForumID");
@@ -138,9 +134,9 @@ public partial class CodditContext : DbContext
 
         modelBuilder.Entity<Permission>(entity =>
         {
-            entity.HasKey(e => e.Id).HasName("PK__Permissi__3214EC27FE52C326");
+            entity.HasKey(e => e.Id).HasName("PK__Permissi__3214EC279A0A5818");
 
-            entity.HasIndex(e => e.Title, "UQ__Permissi__2CB664DC21A1B2E9").IsUnique();
+            entity.HasIndex(e => e.Title, "UQ__Permissi__2CB664DC1CDD94F1").IsUnique();
 
             entity.Property(e => e.Id).HasColumnName("ID");
             entity.Property(e => e.Title)
@@ -151,7 +147,7 @@ public partial class CodditContext : DbContext
 
         modelBuilder.Entity<Post>(entity =>
         {
-            entity.HasKey(e => e.Id).HasName("PK__Posts__3214EC278DAD719D");
+            entity.HasKey(e => e.Id).HasName("PK__Posts__3214EC271CEE0D17");
 
             entity.Property(e => e.Id).HasColumnName("ID");
             entity.Property(e => e.CreatedAt)
@@ -181,12 +177,10 @@ public partial class CodditContext : DbContext
 
         modelBuilder.Entity<Role>(entity =>
         {
-            entity.HasKey(e => e.Id).HasName("PK__Roles__3214EC272B2E0274");
+            entity.HasKey(e => e.Id).HasName("PK__Roles__3214EC271DD38C6F");
 
             entity.Property(e => e.Id).HasColumnName("ID");
             entity.Property(e => e.ForumId).HasColumnName("ForumID");
-            entity.Property(e => e.IsDefault).HasDefaultValueSql("((0))");
-            entity.Property(e => e.IsOwner).HasDefaultValueSql("((0))");
             entity.Property(e => e.Title)
                 .IsRequired()
                 .HasMaxLength(50)
@@ -200,11 +194,11 @@ public partial class CodditContext : DbContext
 
         modelBuilder.Entity<User>(entity =>
         {
-            entity.HasKey(e => e.Id).HasName("PK__Users__3214EC27B716CBB6");
+            entity.HasKey(e => e.Id).HasName("PK__Users__3214EC274B65095A");
 
-            entity.HasIndex(e => e.Username, "UQ__Users__536C85E4B51C7BAE").IsUnique();
+            entity.HasIndex(e => e.Username, "UQ__Users__536C85E4A85120F5").IsUnique();
 
-            entity.HasIndex(e => e.Email, "UQ__Users__A9D10534A4FAA7F9").IsUnique();
+            entity.HasIndex(e => e.Email, "UQ__Users__A9D10534EE993346").IsUnique();
 
             entity.Property(e => e.Id).HasColumnName("ID");
             entity.Property(e => e.BirthDate).HasColumnType("date");
@@ -215,7 +209,9 @@ public partial class CodditContext : DbContext
                 .IsRequired()
                 .HasMaxLength(100)
                 .IsUnicode(false);
-            entity.Property(e => e.IsActive).HasDefaultValueSql("((0))");
+            entity.Property(e => e.IsActive)
+                .IsRequired()
+                .HasDefaultValueSql("((1))");
             entity.Property(e => e.Password)
                 .IsRequired()
                 .HasMaxLength(100)
@@ -232,7 +228,7 @@ public partial class CodditContext : DbContext
 
         modelBuilder.Entity<Vote>(entity =>
         {
-            entity.HasKey(e => e.Id).HasName("PK__Vote__3214EC27DF246883");
+            entity.HasKey(e => e.Id).HasName("PK__Vote__3214EC271091A4C3");
 
             entity.ToTable("Vote");
 
@@ -251,6 +247,7 @@ public partial class CodditContext : DbContext
 
             entity.HasOne(d => d.User).WithMany(p => p.Votes)
                 .HasForeignKey(d => d.UserId)
+                .OnDelete(DeleteBehavior.ClientSetNull)
                 .HasConstraintName("FK__Vote__UserID__4AB81AF0");
         });
 

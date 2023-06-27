@@ -20,7 +20,7 @@ RF07 - Usuários com devida permissão podem:<br />
 RF08 - Sair de um fórum (deixar de ser membro).<br />
 RF09 - Visitar a página de um fórum.<br />
 
-<br /><br /><br />
+<br /><br />
 
 RNF01 - O sistema não pode ser muito feio.<br />
 RNF02 - O sistema não pode ser muito inseguro.<br />

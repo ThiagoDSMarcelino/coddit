@@ -1,13 +1,10 @@
-﻿using System;
-using System.Collections.Generic;
-
-namespace Backend.Model;
+﻿namespace Backend.Model;
 
 public partial class Vote
 {
     public long Id { get; set; }
 
-    public long? UserId { get; set; }
+    public long UserId { get; set; }
 
     public long? PostId { get; set; }
 
