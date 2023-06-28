@@ -1,5 +1,5 @@
-# Created by https://www.toptal.com/developers/gitignore/api/visualstudiocode,angular,web
-# Edit at https://www.toptal.com/developers/gitignore?templates=visualstudiocode,angular,web
+# Created by https://www.toptal.com/developers/gitignore/api/visualstudiocode,angular,web,dotenv
+# Edit at https://www.toptal.com/developers/gitignore?templates=visualstudiocode,angular,web,dotenv
 
 ### Angular ###
 ## Angular ##
@@ -32,6 +32,10 @@ e2e/*.map
 
 # System Files
 .DS_Store/
+
+### dotenv ###
+.env
+src/environment.ts
 
 ### VisualStudioCode ###
 .vscode/*
@@ -67,4 +71,4 @@ e2e/*.map
 *.wat
 *.xhtml
 
-# End of https://www.toptal.com/developers/gitignore/api/visualstudiocode,angular,web
+# End of https://www.toptal.com/developers/gitignore/api/visualstudiocode,angular,web,dotenv

@@ -8,8 +8,8 @@ import { FeedComponent } from './Pages/feed/feed.component';
 
 const routes: Routes = [
   { path: "", component: FeedComponent },
-  { path: "sign in", component: SignInComponent },
-  { path: "sign up", component: SignUpComponent },
+  { path: "signin", component: SignInComponent },
+  { path: "signup", component: SignUpComponent },
   { path: "account", component: AccountComponent },
 ];
 
