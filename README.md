@@ -1,29 +1,27 @@
-# Coddit
+# Frontend
 
-RF01 - O sistema deve possuir um cadastro/login de usuário com Email, Usuario, Senha, Foto, DataNasc.<br />
-RF02 - O usuário pode criar um Fórum(titulo, descricao, dataCriado).<br />
-RF03 - O usuário pode ver os Fóruns que ele é membro.<br />
-RF04 - Pode ver seu feed com posts de vários fóruns.<br />
-RF05 - O usuário pode procurar por Fóruns existentes.<br />
-RF06 - O usuário pode tornar-se membro de qualquer Fórum.<br />
-RF07 - Usuários com devida permissão podem:<br />
-	&emsp;RF07.1 - Ver posts.<br />
-	&emsp;RF07.2 - Postar(titulo, mensagem, anexo).<br />
-	&emsp;RF07.3 - Dar Like (+1).<br />
-	&emsp;RF07.4 - Dar deslike (-1).<br />
-	&emsp;RF07.5 - Remover posts.<br />
-	&emsp;RF07.6 - Remover membros.<br />
-	&emsp;RF07.7 - Editar posts.<br />
-	&emsp;RF07.8 - Promover membros (mudar seu cargo)<br />
-	&emsp;RF07.9 - Criar/Editar cargos.<br />
-	&emsp;RF07.10 - Deletar o Fórum.<br />
-RF08 - Sair de um fórum (deixar de ser membro).<br />
-RF09 - Visitar a página de um fórum.<br />
+This project was generated with [Angular CLI](https://github.com/angular/angular-cli) version 16.0.4.
 
-<br /><br />
+## Development server
 
-RNF01 - O sistema não pode ser muito feio.<br />
-RNF02 - O sistema não pode ser muito inseguro.<br />
-RNF03 - O sistema deve usar Angular :(, C# :) e Sql :|.<br />
-RNF04 - O sistema não deve ser lento demais.<br />
-RNF05 - Deve ter um nome criativo e red pill.<br />
+Run `ng serve` for a dev server. Navigate to `http://localhost:4200/`. The application will automatically reload if you change any of the source files.
+
+## Code scaffolding
+
+Run `ng generate component component-name` to generate a new component. You can also use `ng generate directive|pipe|service|class|guard|interface|enum|module`.
+
+## Build
+
+Run `ng build` to build the project. The build artifacts will be stored in the `dist/` directory.
+
+## Running unit tests
+
+Run `ng test` to execute the unit tests via [Karma](https://karma-runner.github.io).
+
+## Running end-to-end tests
+
+Run `ng e2e` to execute the end-to-end tests via a platform of your choice. To use this command, you need to first add a package that implements end-to-end testing capabilities.
+
+## Further help
+
+To get more help on the Angular CLI use `ng help` or go check out the [Angular CLI Overview and Command Reference](https://angular.io/cli) page.
