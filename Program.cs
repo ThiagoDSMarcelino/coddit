@@ -4,6 +4,8 @@ using Microsoft.Extensions.Hosting;
 using Securitas.JWT;
 using Securitas;
 using System.Text;
+using System.Security.Cryptography;
+using Coddit.Services;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -13,7 +15,7 @@ builder.Services.AddSwaggerGen();
 
 builder.Services.AddCors(options =>
 {
-    options.AddPolicy(name: "MainPolicy",
+    options.AddPolicy("MainPolicy",
     policy =>
     {
         policy
@@ -23,9 +25,23 @@ builder.Services.AddCors(options =>
     });
 });
 
-builder.Services.AddTransient<EnvironmentFile>(
+#region Base services
+
+builder.Services.AddTransient(
     p => new EnvironmentFile(".env")
 );
+
+builder.Services.AddTransient<HashAlgorithm>(
+    p => SHA256.Create()
+);
+
+builder.Services.AddTransient(
+    p => Encoding.UTF8
+);
+
+#endregion
+
+#region Security services
 
 builder.Services.AddTransient<IPasswordProvider>(
     p => new ConstPasswordProvider(
@@ -34,9 +50,13 @@ builder.Services.AddTransient<IPasswordProvider>(
     )
 );
 
-builder.Services.AddTransient<Encoding>(
-    p => Encoding.UTF8
+builder.Services.AddTransient<ISecurityService>(
+    p => new SecurityService(
+        p.GetService<Encoding>(),
+        p.GetService<HashAlgorithm>()
+    )
 );
+
 
 builder.Services.AddTransient<IJWTService>(
     p => new JWTService(
@@ -46,8 +66,14 @@ builder.Services.AddTransient<IJWTService>(
     )
 );
 
+#endregion
+
+#region Repositories services
+
 builder.Services.AddScoped<CodditContext>();
-builder.Services.AddTransient<IRepository<User, long>, UserRepository>();
+builder.Services.AddTransient<IRepository<User>, UserRepository>();
+
+#endregion
 
 var app = builder.Build();
 

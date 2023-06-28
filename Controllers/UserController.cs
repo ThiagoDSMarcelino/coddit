@@ -1,81 +1,82 @@
-using System.Security.Cryptography;
 using Securitas.JWT;
-using System.Text;
 
-namespace Backend.Controllers;
+namespace Coddit.Controllers;
+
+using Coddit.DTO.User;
+using Services;
 
 [ApiController]
 [Route("user")]
 [EnableCors("MainPolicy")]
 public class StudentController : ControllerBase
 {
-    private readonly Encoding _encoding;
-
-
-    public StudentController(Encoding encoding)
-        => _encoding = encoding;
-
     [HttpPost("signup")]
-    public async Task<IActionResult> Signup(
-        [FromBody] User user,
-        [FromServices] IRepository<User, long> repo,
-        [FromServices] IJWTService jwt)
+    public async Task<ActionResult<UserData>> SignUp(
+        [FromBody] UserData userData,
+        [FromServices] IJWTService jwt,
+        [FromServices] IRepository<User> repo,
+        [FromServices] ISecurityService security)
     {
-        var errors = new List<string>();
-        var usedEmail = await repo.Exist(u => u.Email == user.Email);
-        var usedUsername = await repo.Exist(u => u.Username == user.Username);
+        var usedUsername = await repo.Exist(user => user.Username == userData.Username);
+        var usedEmail = await repo.Exist(user => user.Email == userData.Email);
+        var messages = new List<string>();
         
         if (usedEmail)
-            errors.Add("E-mail already used");
+            messages.Add("E-mail already used");
 
         if (usedUsername)
-            errors.Add("Username already used");
+            messages.Add("User-name already used");
 
-        if (errors.Any())
-            return BadRequest(errors);
+        if (messages.Any())
+            return BadRequest(messages);
 
-        var salt = GenerateSalt(16);
+        var salt = security.GenerateSalt(16);
 
-        user.Password = HashPassword(user.Password, salt);
-        user.Salt = salt;
+        var newUser = new User()
+        {
+            Username = userData.Username,
+            Email = userData.Email,
+            Password = security.HashPassword(userData.Password, salt),
+            Salt = salt,
+            BirthDate = userData.BirthDate
+        };
 
-        await repo.Add(user);
+        await repo.Add(newUser);
 
-        var token = jwt.GenerateToken(user);
+        var result = new UserResult()
+        {
+            Token = jwt.GenerateToken(userData)
+        };
 
-        return Created("http://localhost:4200/", token);
+        return Created("", result);
     }
 
-    private string HashPassword(string password, string salt)
+    [HttpPost("signin")]
+    public async Task<IActionResult> SignIn(
+        [FromBody] UserData userData,
+        [FromServices] IJWTService jwt,
+        [FromServices] IRepository<User> repo,
+        [FromServices] ISecurityService security)
     {
-        var encryptedBytes = ConcatPasswordSalt(password, salt);
+        Console.WriteLine(userData.Login);
 
-        using var sha = SHA256.Create();
-        var hashedPasswordBytes = sha.ComputeHash(encryptedBytes);
-        var hashedPassword = _encoding.GetString(hashedPasswordBytes);
+        var user = await repo.Get(user =>
+            user.Email == userData.Login ||
+            user.Username == userData.Login);
 
-        return hashedPassword; 
-    }
+        if (user is null)
+            return BadRequest("Login isn't castrated");
 
-    private byte[] ConcatPasswordSalt(string password, string salt)
-    {
-        var passwordBytes = _encoding.GetBytes(password);
-        var saltBytes = _encoding.GetBytes(salt);
-        
-        var concatBytes = new byte[passwordBytes.Length + saltBytes.Length];
-        passwordBytes.CopyTo(concatBytes, 0);
-        saltBytes.CopyTo(concatBytes, passwordBytes.Length);
+        var hashedPassword = security.HashPassword(userData.Password, user.Salt);
 
-        return concatBytes;
-    }
+        if (hashedPassword != user.Password)
+            return BadRequest($"Inserted: {hashedPassword}\nCorrect: {user.Salt}\nSalt: {user.Salt}");
 
-    private string GenerateSalt(int saltLength)
-    {
-        var length = (int)MathF.Floor(saltLength * (6 / 8));
-        byte[] randBytes = new byte[length];
-        Random.Shared.NextBytes(randBytes);
-        var salt = Convert.ToBase64String(randBytes);
+        var result = new UserResult()
+        {
+            Token = jwt.GenerateToken(userData)
+        };
 
-        return salt;
+        return Ok(result);
     }
 }

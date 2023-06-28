@@ -1,6 +1,6 @@
 ﻿using Securitas;
 
-namespace Backend.Model;
+namespace Coddit.Model;
 
 public partial class CodditContext : DbContext
 {

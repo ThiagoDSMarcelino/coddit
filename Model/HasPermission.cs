@@ -1,4 +1,4 @@
-﻿namespace Backend.Model;
+﻿namespace Coddit.Model;
 
 public partial class HasPermission
 {

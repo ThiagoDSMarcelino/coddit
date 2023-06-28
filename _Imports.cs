@@ -7,7 +7,6 @@ global using Microsoft.AspNetCore.Cors;
 global using Microsoft.AspNetCore.Mvc;
 global using Microsoft.EntityFrameworkCore;
 
-
-
-global using Backend.Repositories;
-global using Backend.Model;
+global using Coddit.Repositories;
+global using Coddit.Model;
+global using Coddit.DTO;

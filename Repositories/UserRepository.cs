@@ -1,41 +1,38 @@
-namespace Backend.Repositories;
+namespace Coddit.Repositories;
 
 using Model;
 
-public class UserRepository : IRepository<User, long>
+public class UserRepository : IRepository<User>
 {
-    private CodditContext _entity;
+    private readonly CodditContext entity;
     
-    public UserRepository(CodditContext service)
-        => _entity = service;
-
-    public async Task<User> GetByPK(long key)
-        => await _entity.Users
-            .FirstOrDefaultAsync(user => user.Id == key);
-
-    public async Task<bool> Exist(Expression<Func<User, bool>> exp)
-        => await _entity.Users
-            .AnyAsync(exp);
-    
+    public UserRepository(CodditContext context)
+        => entity = context;
+        
     public async Task Add(User obj)
     {
-        await _entity.AddAsync(obj);
-        await _entity.SaveChangesAsync();
+        await entity.AddAsync(obj);
+        await entity.SaveChangesAsync();
     }
     
     public async Task Delete(User obj)
     {
-        _entity.Remove(obj);
-        await _entity.SaveChangesAsync();
+        entity.Remove(obj);
+        await entity.SaveChangesAsync();
     }
     
     public async Task Update(User obj)
     {
-        _entity.Update(obj);
-        await _entity.SaveChangesAsync();
+        entity.Update(obj);
+        await entity.SaveChangesAsync();
     }
     
+    public async Task<User> Get(Expression<Func<User, bool>> exp)
+        => await entity.Users.FirstOrDefaultAsync(exp);
+
+    public async Task<bool> Exist(Expression<Func<User, bool>> exp)
+        => await entity.Users.AnyAsync(exp);
+
     public async Task<List<User>> Filter(Expression<Func<User, bool>> exp)
-        => await _entity.Users
-            .Where(exp).ToListAsync();
+        => await entity.Users.Where(exp).ToListAsync();
 }
