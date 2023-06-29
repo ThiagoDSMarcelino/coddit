@@ -1,11 +1,11 @@
-using Microsoft.Extensions.DependencyInjection;
-using Microsoft.AspNetCore.Builder;
-using Microsoft.Extensions.Hosting;
-using Securitas.JWT;
-using Securitas;
-using System.Text;
-using System.Security.Cryptography;
 using Coddit.Services;
+using Microsoft.AspNetCore.Builder;
+using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Hosting;
+using Securitas;
+using Securitas.JWT;
+using System.Security.Cryptography;
+using System.Text;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -27,15 +27,15 @@ builder.Services.AddCors(options =>
 
 #region Base services
 
-builder.Services.AddTransient(
-    p => new EnvironmentFile(".env")
+builder.Services.AddSingleton(
+    p => new EnvironmentFile("../.env")
 );
 
-builder.Services.AddTransient<HashAlgorithm>(
+builder.Services.AddScoped<HashAlgorithm>(
     p => SHA256.Create()
 );
 
-builder.Services.AddTransient(
+builder.Services.AddSingleton(
     p => Encoding.UTF8
 );
 
@@ -72,6 +72,7 @@ builder.Services.AddTransient<IJWTService>(
 
 builder.Services.AddScoped<CodditContext>();
 builder.Services.AddTransient<IRepository<User>, UserRepository>();
+builder.Services.AddTransient<IRepository<Forum>, ForumRepository>();
 
 #endregion
 
