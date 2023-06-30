@@ -6,7 +6,7 @@ import { Component } from '@angular/core';
 import { Router } from '@angular/router';
 
 import { UserService } from 'src/app/Services/UserService/user.service';
-import { UserData } from 'src/app/Services/UserService/user-data';
+import { UserData } from 'src/app/DTO/user-data';
 
 @Component({
   selector: 'app-sign-up',
@@ -28,7 +28,6 @@ export class SignUpComponent {
   Agreed: boolean = false
   Errors: string[] = []
 
-
   HasError = () => this.Errors.length > 0
 
   AddError = (message: string) => {
@@ -48,11 +47,10 @@ export class SignUpComponent {
       .has().digits(1)
 
     const passwordResult = schema.validate(this.Password, { details: true })
-    const passwordErrors = passwordResult as object[]
-    passwordErrors.forEach(err => {
-      const passwordError = err as PasswordError
-      this.AddError(passwordError.message)
-    })
+    const passwordErrors = passwordResult as PasswordError[]
+    const errors = passwordErrors.map((err) => err.message)
+
+    this.Errors = [...this.Errors, ...errors]
 
     interface PasswordError {
       message: string
@@ -76,7 +74,6 @@ export class SignUpComponent {
       this.AddError("Invalid e-mail")
     }
 
-
     if (this.Errors.length > 0) {
       return
     }
@@ -90,8 +87,8 @@ export class SignUpComponent {
     }
 
     this.service.create(user).subscribe({
-      next: (result) => {
-        sessionStorage.setItem('token', result.token);
+      next: (res) => {
+        sessionStorage.setItem('token', res.token)
         this.router.navigate(['/'])
       },
       error: (err) => {
