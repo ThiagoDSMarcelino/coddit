@@ -73,6 +73,8 @@ builder.Services.AddTransient<IJWTService>(
 builder.Services.AddScoped<CodditContext>();
 builder.Services.AddTransient<IRepository<User>, UserRepository>();
 builder.Services.AddTransient<IRepository<Forum>, ForumRepository>();
+builder.Services.AddTransient<IRepository<Role>, RoleRepository>();
+builder.Services.AddTransient<IRepository<Member>, MemberRepository>();
 
 #endregion
 

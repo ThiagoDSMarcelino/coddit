@@ -1,8 +1,9 @@
-﻿namespace Coddit.Controllers;
+﻿using Securitas.JWT;
+
+namespace Coddit.Controllers;
 
 using Model;
 using DTO;
-using Securitas.JWT;
 
 [ApiController]
 [Route("forum")]
@@ -12,11 +13,13 @@ public class ForumController : Controller
     [HttpPost("create")]
     public async Task<IActionResult> Create(
         [FromBody] ForumData forumData,
+        [FromServices] IRepository<Member> memberRepo,
+        [FromServices] IRepository<Role> roleRepo,
         [FromServices] IRepository<Forum> forumRepo,
         [FromServices] IRepository<User> userRepo,
         [FromServices] IJWTService jwt)
     {
-        var validation = await jwt.ValidateTokenAsync<JWTData>(forumData.USerToken);
+        var validation = await jwt.ValidateTokenAsync<JWTData>(forumData.UserToken);
 
         if (!validation.IsValid)
             return BadRequest("Invalid Token");
@@ -26,7 +29,6 @@ public class ForumController : Controller
         if (usedTitle)
             return BadRequest("This title for a forum is already take");
 
-        var user = userRepo.Get(user => user.Id == validation.Data.UserId);
 
         var newForum = new Forum()
         {
@@ -38,33 +40,51 @@ public class ForumController : Controller
 
         var forum = forumRepo.Get(forum => forum.Title == newForum.Title);
 
-        var admRole = new Role()
+        await CreateDefaultRoles(forum.Id, roleRepo);
+
+        var user = userRepo.Get(user => user.Id == validation.Data.UserId);
+        var adm = roleRepo.Get(role => role.ForumId == forum.Id && role.IsOwner);
+
+        var firstMember = new Member()
         {
+            UserId = user.Id,
             ForumId = forum.Id,
-            Title = "ADM",
-            IsOwner = true,
-            IsDefault = false,
+            RoleId = adm.Id
         };
 
-        var defaultRole = new Role()
-        {
-            ForumId = forum.Id,
-            Title = "Default",
-            IsOwner = false,
-            IsDefault = true,
-        };
-
-        // TODO
-
+        await memberRepo.Add(firstMember);
 
         return Ok();
     }
+
+    //private static async Task<IActionResult> CreateDefaultRoles(int forumId, IRepository<Role> roleRepo)
+    //{
+    //    var admRole = new Role()
+    //    {
+    //        ForumId = forumId,
+    //        Title = "ADM",
+    //        IsOwner = true,
+    //        IsDefault = false,
+    //    };
+
+    //    var defaultRole = new Role()
+    //    {
+    //        ForumId = forumId,
+    //        Title = "Default",
+    //        IsOwner = false,
+    //        IsDefault = true,
+    //    };
+
+    //    await roleRepo.Add(admRole);
+    //    await roleRepo.Add(defaultRole);
+    //}
 
     //[HttpGet("{token}")]
     //public async Task<IActionResult> GetForuns(
     //    string token,
     //    [FromServices] IRepository<User> userRepo,
     //    [FromServices] IRepository<Forum> forumRepo,
+    //    [FromServices] IRepository<Member> memberRepo,
     //    [FromServices] IJWTService jwt)
     //{
     //    var validationResult = await jwt.ValidateTokenAsync<JWTData>(token);
@@ -72,13 +92,17 @@ public class ForumController : Controller
     //    if (!validationResult.IsValid)
     //        return BadRequest("Invalid token");
 
-    //    var user = await userRepo.Get(user => user.Id == validationResult.Data.Id);
+    //    var user = await userRepo.Get(user => user.Id == validationResult.Data.UserId);
 
     //    if (user == null)
     //        return BadRequest();
 
+    //    var memberFrom = await memberRepo.Filter(member => member.UserId == user.Id);
 
+    //    var forumIds = memberFrom.Select(member => member.ForumId);
 
-    //    return Ok();
+    //    var forums = await forumRepo.Filter(forum => forumIds.Contains(forum.Id));
+
+    //    return Ok(forums);
     //}
 }

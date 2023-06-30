@@ -44,7 +44,17 @@ public class StudentController : ControllerBase
 
         await usersRepo.Add(newUser);
 
-        var token = jwt.GenerateToken(userData);
+        var user = usersRepo.Get(user => 
+            user.Username == userData.Username && 
+            user.Email == userData.Email);
+
+        var data = new JWTData()
+        {
+            UserId = user.Id,
+            JWTCreateAt = DateTime.Now
+        };
+
+        var token = jwt.GenerateToken(data);
 
         return Ok(new { token });
     }
@@ -75,7 +85,7 @@ public class StudentController : ControllerBase
             JWTCreateAt = DateTime.Now
         };  
 
-        var token = jwt.GenerateToken(userData);
+        var token = jwt.GenerateToken(data);
 
         return Ok(new { token });
     }
