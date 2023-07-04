@@ -3,14 +3,14 @@ import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { Router } from '@angular/router';
 
-import { ForumService } from 'src/app/Services/ForumService/forum.service';
-import verifyError from 'src/app/Services/ErrorService/verifyError';
-import { ForumData } from 'src/app/DTO/Data/forum-data';
+import { ForumService } from 'src/app/services/forum/forum.service';
+import verifyError from 'src/app/services/error/verify-error';
+import { ForumData } from 'src/app/models/data/forum-data';
 
 @Component({
   selector: 'app-create-forum',
   templateUrl: './create-forum.component.html',
-  styleUrls: ['./create-forum.component.css'],
+  styleUrls: ['./create-forum.component.css', '../../styles/form.css'],
   standalone: true,
   imports: [FormsModule, CommonModule]
 })

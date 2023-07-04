@@ -1,7 +1,7 @@
 import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 
-import { UserData } from 'src/app/DTO/Data/user-data';
+import { UserData } from 'src/app/models/data/user-data';
 import { environment } from 'src/environment';
 
 @Injectable({

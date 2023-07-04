@@ -1,5 +1,5 @@
 import { Router } from "@angular/router";
-import { ErrorResponse } from "src/app/DTO/Response/error-response";
+import { ErrorResponse } from "src/app/models/response/error-response";
 
 const verifyError = (err: any, router: Router) => {
   if (err.status === 400) {

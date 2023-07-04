@@ -1,16 +1,16 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 
-import { PostComponent } from './post.component';
+import { PostInfoComponent } from './post-info.component';
 
 describe('PostComponent', () => {
-  let component: PostComponent;
-  let fixture: ComponentFixture<PostComponent>;
+  let component: PostInfoComponent;
+  let fixture: ComponentFixture<PostInfoComponent>;
 
   beforeEach(() => {
     TestBed.configureTestingModule({
-      declarations: [PostComponent]
+      declarations: [PostInfoComponent]
     });
-    fixture = TestBed.createComponent(PostComponent);
+    fixture = TestBed.createComponent(PostInfoComponent);
     component = fixture.componentInstance;
     fixture.detectChanges();
   });

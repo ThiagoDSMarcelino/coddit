@@ -1,16 +1,16 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 
-import { MyCommunitiesComponent } from './my-communities.component';
+import { MyForumsComponent } from './my-forums.component';
 
 describe('MyCommunitiesComponent', () => {
-  let component: MyCommunitiesComponent;
-  let fixture: ComponentFixture<MyCommunitiesComponent>;
+  let component: MyForumsComponent;
+  let fixture: ComponentFixture<MyForumsComponent>;
 
   beforeEach(() => {
     TestBed.configureTestingModule({
-      declarations: [MyCommunitiesComponent]
+      declarations: [MyForumsComponent]
     });
-    fixture = TestBed.createComponent(MyCommunitiesComponent);
+    fixture = TestBed.createComponent(MyForumsComponent);
     component = fixture.componentInstance;
     fixture.detectChanges();
   });

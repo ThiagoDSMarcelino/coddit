@@ -4,14 +4,14 @@ import { FormsModule } from '@angular/forms';
 import { Component } from '@angular/core';
 import { Router } from '@angular/router';
 
-import { UserService } from 'src/app/Services/UserService/user.service';
-import verifyError from 'src/app/Services/ErrorService/verifyError';
-import { UserData } from 'src/app/DTO/Data/user-data';
+import { UserService } from 'src/app/services/user/user.service';
+import verifyError from 'src/app/services/error/verify-error';
+import { UserData } from 'src/app/models/data/user-data';
 
 @Component({
   selector: 'app-sign-in',
   templateUrl: './sign-in.component.html',
-  styleUrls: ['./sign-in.component.css'],
+  styleUrls: ['./sign-in.component.css', '../../styles/form.css'],
   standalone: true,
   imports: [FormsModule, CommonModule]
 })
