@@ -5,7 +5,8 @@ import { Component } from '@angular/core';
 import { Router } from '@angular/router';
 
 import { UserService } from 'src/app/Services/UserService/user.service';
-import { UserData } from 'src/app/DTO/user-data';
+import verifyError from 'src/app/Services/ErrorService/verifyError';
+import { UserData } from 'src/app/DTO/Data/user-data';
 
 @Component({
   selector: 'app-sign-in',
@@ -76,12 +77,7 @@ export class SignInComponent {
         this.router.navigate(['/'])
       },
       error: (err) => {
-        if (err.status === 400) {
-          this.Errors = [...this.Errors, err.error]
-          return;
-        }
-
-        console.log(err)
+        this.Errors = [...this.Errors, ...verifyError(err, this.router)]
       },
     })
   }

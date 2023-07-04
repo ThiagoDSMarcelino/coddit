@@ -1,10 +1,11 @@
-import { Component } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { Router } from '@angular/router';
 
 import { ForumService } from 'src/app/Services/ForumService/forum.service';
-import { ForumData } from 'src/app/DTO/forum-data';
+import verifyError from 'src/app/Services/ErrorService/verifyError';
+import { ForumData } from 'src/app/DTO/Data/forum-data';
 
 @Component({
   selector: 'app-create-forum',
@@ -13,14 +14,18 @@ import { ForumData } from 'src/app/DTO/forum-data';
   standalone: true,
   imports: [FormsModule, CommonModule]
 })
-export class CreateForumComponent {
+export class CreateForumComponent implements OnInit {
   
   constructor(
     private router: Router,
     private service: ForumService) { }
+  
+  ngOnInit = () => {
+    // TODO
+  }
 
-  Title: string = ''
-  Description: string = ''
+  Title = ''
+  Description = ''
   Errors: string[] = []
   
   HasError = () => this.Errors.length > 0
@@ -40,7 +45,7 @@ export class CreateForumComponent {
     var token = sessionStorage.getItem('token')
     
     if (token === null) {
-      this.router.navigate(['/signup'])
+      this.router.navigate(['/signin'])
       this.CloseModal()
       return
     }
@@ -58,9 +63,9 @@ export class CreateForumComponent {
     }
 
     const forum: ForumData  = {
-      UserToken: token,
-      Title: this.Title,
-      Description: this.Description
+      token: token,
+      title: this.Title,
+      description: this.Description
     }
 
     this.service.create(forum).subscribe({
@@ -68,15 +73,11 @@ export class CreateForumComponent {
         this.CloseModal()
       },
       error: (err) => {
-        if (err.status === 400) {
-          this.Errors = [...this.Errors, ...err.error]
-          this.Title = ''
-          this.Description = ''
-          return;
-        }
-
-        console.log(err)
+        this.Errors = [...this.Errors, ...verifyError(err, this.router)]
       }
-    });    
+    });
+    
+    this.Title = ''
+    this.Description = ''  
   }
 }

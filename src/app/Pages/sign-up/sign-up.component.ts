@@ -6,7 +6,8 @@ import { Component } from '@angular/core';
 import { Router } from '@angular/router';
 
 import { UserService } from 'src/app/Services/UserService/user.service';
-import { UserData } from 'src/app/DTO/user-data';
+import verifyError from 'src/app/Services/ErrorService/verifyError';
+import { UserData } from 'src/app/DTO/Data/user-data';
 
 @Component({
   selector: 'app-sign-up',
@@ -16,17 +17,25 @@ import { UserData } from 'src/app/DTO/user-data';
   imports: [FormsModule, CommonModule]
 })
 export class SignUpComponent {
+  Username = ''
+  Password = ''
+  RepeatedPassword = ''
+  Email = ''
+  BirthDate = ''
+  Agreed = false
+  Errors: string[] = []
+  Max: string
+  Min: string
+
   constructor(
     private service: UserService,
-    private router: Router) { }
-
-  Username: string = ''
-  Password: string = ''
-  RepeatedPassword: string = ''
-  Email: string = ''
-  BirthDate: Date = new Date()
-  Agreed: boolean = false
-  Errors: string[] = []
+    private router: Router) {
+      this.Max = new Date().toISOString().substring(0, 10)
+      
+      const minDate = new Date()
+      minDate.setFullYear(minDate.getFullYear() - 100)
+      this.Min = minDate.toISOString().substring(0, 10)
+    }
 
   HasError = () => this.Errors.length > 0
 
@@ -57,21 +66,31 @@ export class SignUpComponent {
     }
   }
 
+  ValidateAge = () => {
+    const diff = Date.now() - new Date(this.BirthDate).getTime();
+    const year = new Date(diff).getFullYear();
+
+    if (Math.abs(year - 1970) < 18 || Number.isNaN(year)) {
+      this.AddError("You must be over than 18 years old")
+    }
+  }
+
   SubmitForm = () => {
     this.Errors = []
 
     this.ValidatePassword()
-
+    this.ValidateAge()
+    
     if (this.Password !== this.RepeatedPassword) {
       this.AddError("Both passwords must be equals")
     }
-
-    if (!this.Agreed) {
-      this.AddError("You must agree with to terms and conditions")
-    }
-
+    
     if (!EmailValidator.validate(this.Email)) {
       this.AddError("Invalid e-mail")
+    }
+    
+    if (!this.Agreed) {
+      this.AddError("You must agree with to terms and conditions")
     }
 
     if (this.Errors.length > 0) {
@@ -83,7 +102,7 @@ export class SignUpComponent {
       email: this.Email,
       username: this.Username,
       password: this.Password,
-      birthDate: this.BirthDate
+      birthDate: new Date(this.BirthDate)
     }
 
     this.service.create(user).subscribe({
@@ -92,13 +111,8 @@ export class SignUpComponent {
         this.router.navigate(['/'])
       },
       error: (err) => {
-        if (err.status === 400) {
-          this.Errors = [...this.Errors, ...err.error]
-          return;
-        }
-
-        console.error(err)
-      }
+        this.Errors = [...this.Errors, ...verifyError(err, this.router)]
+      }, 
     })
   }
 }
