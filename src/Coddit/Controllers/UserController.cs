@@ -4,7 +4,6 @@ namespace Coddit.Controllers;
 
 using Coddit.DTO.Data;
 using Coddit.DTO.Response;
-using DTO;
 using Model;
 using Services;
 

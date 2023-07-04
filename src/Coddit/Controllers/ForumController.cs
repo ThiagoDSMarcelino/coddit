@@ -96,12 +96,10 @@ public class ForumController : Controller
         }
     }
 
-
     [HttpPost]
-    public async Task<ActionResult> GetForuns(
+    public async Task<ActionResult<List<ForumResponse>>> GetForunsByQuery(
         [FromBody] UserResponse data,
-        [FromServices] IRepository<User> userRepo,
-        [FromServices] IMemberRepository memberRepo,
+        [FromServices] IRepository<Forum> forumRepo,
         [FromServices] IJWTService jwt,
         string q = "")
     {
@@ -118,9 +116,41 @@ public class ForumController : Controller
             return BadRequest(error);
         }
 
-        var user = await userRepo.Get(user => user.Id == validation.Data.UserId);
+        var allForums = await forumRepo.Filter(f => true);
 
-        Console.WriteLine(user.Username);
+        var forums = allForums
+            .Where(forum => forum.Title.Contains(q))
+            .Select(forum => new ForumResponse()
+                {
+                Title = forum.Title,
+                Description = forum.Description
+                })
+            .ToList();
+
+        return forums;
+    }
+
+    [HttpPost("userForums")]
+    public async Task<ActionResult<List<ForumResponse>>> GetForumsByUser(
+        [FromBody] UserResponse data,
+        [FromServices] IRepository<User> userRepo,
+        [FromServices] IMemberRepository memberRepo,
+        [FromServices] IJWTService jwt)
+    {
+        var validation = await jwt.ValidateTokenAsync<JWTData>(data.Token);
+
+        if (!validation.IsValid)
+        {
+            var error = new ErrorResponse
+            {
+                Messages = Array.Empty<string>(),
+                Reason = "Invalid Token"
+            };
+
+            return BadRequest(error);
+        }
+
+        var user = await userRepo.Get(user => user.Id == validation.Data.UserId);
 
         if (user is null)
         {
@@ -137,15 +167,13 @@ public class ForumController : Controller
             .FilterWithForums(member => member.UserId == user.Id);
 
         var forums = memberFrom
-            .Select(member => member.Forum)
-            .Where(forum => forum.Title.Contains(q))
-            .Select(forum => new ForumResponse()
-                {
-                Title = forum.Title,
-                Description = forum.Description
-                })
+            .Select(member => new ForumResponse()
+            {
+                Title = member.Forum.Title,
+                Description = member.Forum.Description
+            })
             .ToList();
 
-        return Ok(forums);
+        return forums;
     }
 }
