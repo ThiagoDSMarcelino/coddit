@@ -9,9 +9,7 @@ public partial class CodditContext : DbContext
     public CodditContext(EnvironmentFile env)
         => _env = env;
 
-    public CodditContext(
-        DbContextOptions<CodditContext> options,
-        EnvironmentFile env)
+    public CodditContext(DbContextOptions<CodditContext> options, EnvironmentFile env)
         : base(options)
         => _env = env;
 
@@ -40,7 +38,7 @@ public partial class CodditContext : DbContext
     {
         modelBuilder.Entity<Comment>(entity =>
         {
-            entity.HasKey(e => e.Id).HasName("PK__Comments__3214EC273CC22DCE");
+            entity.HasKey(e => e.Id).HasName("PK__Comments__3214EC27B43CD96B");
 
             entity.Property(e => e.Id).HasColumnName("ID");
             entity.Property(e => e.CommentId).HasColumnName("CommentID");
@@ -56,21 +54,23 @@ public partial class CodditContext : DbContext
 
             entity.HasOne(d => d.CommentNavigation).WithMany(p => p.InverseCommentNavigation)
                 .HasForeignKey(d => d.CommentId)
-                .HasConstraintName("FK__Comments__Commen__46E78A0C");
+                .HasConstraintName("FK__Comments__Commen__47DBAE45");
 
             entity.HasOne(d => d.Post).WithMany(p => p.Comments)
                 .HasForeignKey(d => d.PostId)
-                .HasConstraintName("FK__Comments__PostID__45F365D3");
+                .HasConstraintName("FK__Comments__PostID__46E78A0C");
 
             entity.HasOne(d => d.User).WithMany(p => p.Comments)
                 .HasForeignKey(d => d.UserId)
                 .OnDelete(DeleteBehavior.ClientSetNull)
-                .HasConstraintName("FK__Comments__UserID__44FF419A");
+                .HasConstraintName("FK__Comments__UserID__45F365D3");
         });
 
         modelBuilder.Entity<Forum>(entity =>
         {
-            entity.HasKey(e => e.Id).HasName("PK__Forums__3214EC27D793BDAA");
+            entity.HasKey(e => e.Id).HasName("PK__Forums__3214EC278C2D0B45");
+
+            entity.HasIndex(e => e.Title, "UQ__Forums__2CB664DCBCA846BC").IsUnique();
 
             entity.Property(e => e.Id).HasColumnName("ID");
             entity.Property(e => e.CreatedAt)
@@ -88,7 +88,7 @@ public partial class CodditContext : DbContext
 
         modelBuilder.Entity<HasPermission>(entity =>
         {
-            entity.HasKey(e => e.Id).HasName("PK__HasPermi__3214EC27B1E07030");
+            entity.HasKey(e => e.Id).HasName("PK__HasPermi__3214EC27F4C0E82D");
 
             entity.ToTable("HasPermission");
 
@@ -99,17 +99,17 @@ public partial class CodditContext : DbContext
             entity.HasOne(d => d.Permission).WithMany(p => p.HasPermissions)
                 .HasForeignKey(d => d.PermissionId)
                 .OnDelete(DeleteBehavior.ClientSetNull)
-                .HasConstraintName("FK__HasPermis__Permi__5812160E");
+                .HasConstraintName("FK__HasPermis__Permi__59063A47");
 
             entity.HasOne(d => d.Role).WithMany(p => p.HasPermissions)
                 .HasForeignKey(d => d.RoleId)
                 .OnDelete(DeleteBehavior.ClientSetNull)
-                .HasConstraintName("FK__HasPermis__RoleI__571DF1D5");
+                .HasConstraintName("FK__HasPermis__RoleI__5812160E");
         });
 
         modelBuilder.Entity<Member>(entity =>
         {
-            entity.HasKey(e => e.Id).HasName("PK__Members__3214EC27579187C4");
+            entity.HasKey(e => e.Id).HasName("PK__Members__3214EC2770C4FD80");
 
             entity.Property(e => e.Id).HasColumnName("ID");
             entity.Property(e => e.ForumId).HasColumnName("ForumID");
@@ -119,24 +119,24 @@ public partial class CodditContext : DbContext
             entity.HasOne(d => d.Forum).WithMany(p => p.Members)
                 .HasForeignKey(d => d.ForumId)
                 .OnDelete(DeleteBehavior.ClientSetNull)
-                .HasConstraintName("FK__Members__ForumID__5BE2A6F2");
+                .HasConstraintName("FK__Members__ForumID__5CD6CB2B");
 
             entity.HasOne(d => d.Role).WithMany(p => p.Members)
                 .HasForeignKey(d => d.RoleId)
                 .OnDelete(DeleteBehavior.ClientSetNull)
-                .HasConstraintName("FK__Members__RoleID__5CD6CB2B");
+                .HasConstraintName("FK__Members__RoleID__5DCAEF64");
 
             entity.HasOne(d => d.User).WithMany(p => p.Members)
                 .HasForeignKey(d => d.UserId)
                 .OnDelete(DeleteBehavior.ClientSetNull)
-                .HasConstraintName("FK__Members__UserID__5AEE82B9");
+                .HasConstraintName("FK__Members__UserID__5BE2A6F2");
         });
 
         modelBuilder.Entity<Permission>(entity =>
         {
-            entity.HasKey(e => e.Id).HasName("PK__Permissi__3214EC279A0A5818");
+            entity.HasKey(e => e.Id).HasName("PK__Permissi__3214EC2718A2F609");
 
-            entity.HasIndex(e => e.Title, "UQ__Permissi__2CB664DC1CDD94F1").IsUnique();
+            entity.HasIndex(e => e.Title, "UQ__Permissi__2CB664DCB243B5B6").IsUnique();
 
             entity.Property(e => e.Id).HasColumnName("ID");
             entity.Property(e => e.Title)
@@ -147,7 +147,7 @@ public partial class CodditContext : DbContext
 
         modelBuilder.Entity<Post>(entity =>
         {
-            entity.HasKey(e => e.Id).HasName("PK__Posts__3214EC271CEE0D17");
+            entity.HasKey(e => e.Id).HasName("PK__Posts__3214EC277170B7BD");
 
             entity.Property(e => e.Id).HasColumnName("ID");
             entity.Property(e => e.CreatedAt)
@@ -167,17 +167,17 @@ public partial class CodditContext : DbContext
             entity.HasOne(d => d.Forum).WithMany(p => p.Posts)
                 .HasForeignKey(d => d.ForumId)
                 .OnDelete(DeleteBehavior.ClientSetNull)
-                .HasConstraintName("FK__Posts__ForumID__412EB0B6");
+                .HasConstraintName("FK__Posts__ForumID__4222D4EF");
 
             entity.HasOne(d => d.User).WithMany(p => p.Posts)
                 .HasForeignKey(d => d.UserId)
                 .OnDelete(DeleteBehavior.ClientSetNull)
-                .HasConstraintName("FK__Posts__UserID__403A8C7D");
+                .HasConstraintName("FK__Posts__UserID__412EB0B6");
         });
 
         modelBuilder.Entity<Role>(entity =>
         {
-            entity.HasKey(e => e.Id).HasName("PK__Roles__3214EC271DD38C6F");
+            entity.HasKey(e => e.Id).HasName("PK__Roles__3214EC277B46B769");
 
             entity.Property(e => e.Id).HasColumnName("ID");
             entity.Property(e => e.ForumId).HasColumnName("ForumID");
@@ -189,16 +189,16 @@ public partial class CodditContext : DbContext
             entity.HasOne(d => d.Forum).WithMany(p => p.Roles)
                 .HasForeignKey(d => d.ForumId)
                 .OnDelete(DeleteBehavior.ClientSetNull)
-                .HasConstraintName("FK__Roles__ForumID__4F7CD00D");
+                .HasConstraintName("FK__Roles__ForumID__5070F446");
         });
 
         modelBuilder.Entity<User>(entity =>
         {
-            entity.HasKey(e => e.Id).HasName("PK__Users__3214EC274B65095A");
+            entity.HasKey(e => e.Id).HasName("PK__Users__3214EC279A777999");
 
-            entity.HasIndex(e => e.Username, "UQ__Users__536C85E4A85120F5").IsUnique();
+            entity.HasIndex(e => e.Username, "UQ__Users__536C85E4289F1577").IsUnique();
 
-            entity.HasIndex(e => e.Email, "UQ__Users__A9D10534EE993346").IsUnique();
+            entity.HasIndex(e => e.Email, "UQ__Users__A9D105345EE02B49").IsUnique();
 
             entity.Property(e => e.Id).HasColumnName("ID");
             entity.Property(e => e.BirthDate).HasColumnType("date");
@@ -218,7 +218,7 @@ public partial class CodditContext : DbContext
                 .IsUnicode(false);
             entity.Property(e => e.Salt)
                 .IsRequired()
-                .HasMaxLength(12)
+                .HasMaxLength(16)
                 .IsUnicode(false);
             entity.Property(e => e.Username)
                 .IsRequired()
@@ -228,7 +228,7 @@ public partial class CodditContext : DbContext
 
         modelBuilder.Entity<Vote>(entity =>
         {
-            entity.HasKey(e => e.Id).HasName("PK__Vote__3214EC271091A4C3");
+            entity.HasKey(e => e.Id).HasName("PK__Vote__3214EC27E446DEDD");
 
             entity.ToTable("Vote");
 
@@ -239,16 +239,16 @@ public partial class CodditContext : DbContext
 
             entity.HasOne(d => d.Comment).WithMany(p => p.Votes)
                 .HasForeignKey(d => d.CommentId)
-                .HasConstraintName("FK__Vote__CommentID__4CA06362");
+                .HasConstraintName("FK__Vote__CommentID__4D94879B");
 
             entity.HasOne(d => d.Post).WithMany(p => p.Votes)
                 .HasForeignKey(d => d.PostId)
-                .HasConstraintName("FK__Vote__PostID__4BAC3F29");
+                .HasConstraintName("FK__Vote__PostID__4CA06362");
 
             entity.HasOne(d => d.User).WithMany(p => p.Votes)
                 .HasForeignKey(d => d.UserId)
                 .OnDelete(DeleteBehavior.ClientSetNull)
-                .HasConstraintName("FK__Vote__UserID__4AB81AF0");
+                .HasConstraintName("FK__Vote__UserID__4BAC3F29");
         });
 
         OnModelCreatingPartial(modelBuilder);

@@ -5,22 +5,22 @@ namespace Coddit.Services;
 
 public class SecurityService : ISecurityService
 {
-    private readonly HashAlgorithm algorithm;
-    private readonly Encoding encoding;
+    private readonly HashAlgorithm _algorithm;
+    private readonly Encoding _encoding;
 
     public SecurityService(Encoding encoding, HashAlgorithm algorithm)
     {
-        this.encoding = encoding;
-        this.algorithm = algorithm;
+        this._encoding = encoding;
+        this._algorithm = algorithm;
     }
 
     public string HashPassword(string password, string salt)
     {
         var concatPassword = password + salt;
-        var bytesPassword = encoding.GetBytes(concatPassword);
+        var bytesPassword = _encoding.GetBytes(concatPassword);
 
-        var hashedPasswordBytes = algorithm.ComputeHash(bytesPassword);
-        algorithm.Dispose();
+        var hashedPasswordBytes = _algorithm.ComputeHash(bytesPassword);
+        _algorithm.Dispose();
 
         var hashedPassword = Convert.ToBase64String(hashedPasswordBytes);
 

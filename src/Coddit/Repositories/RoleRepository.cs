@@ -4,35 +4,35 @@ using Model;
 
 public class RoleRepository : IRepository<Role>
 {
-    private readonly CodditContext entity;
+    private readonly CodditContext _entity;
 
     public RoleRepository(CodditContext context)
-        => entity = context;
+        => _entity = context;
 
     public async Task Add(Role obj)
     {
-        await entity.AddAsync(obj);
-        await entity.SaveChangesAsync();
+        await _entity.AddAsync(obj);
+        await _entity.SaveChangesAsync();
     }
 
     public async Task Delete(Role obj)
     {
-        entity.Remove(obj);
-        await entity.SaveChangesAsync();
+        _entity.Remove(obj);
+        await _entity.SaveChangesAsync();
     }
 
     public async Task Update(Role obj)
     {
-        entity.Update(obj);
-        await entity.SaveChangesAsync();
+        _entity.Update(obj);
+        await _entity.SaveChangesAsync();
     }
 
     public async Task<Role> Get(Expression<Func<Role, bool>> exp)
-        => await entity.Roles.FirstOrDefaultAsync(exp);
+        => await _entity.Roles.FirstOrDefaultAsync(exp);
 
     public async Task<bool> Exist(Expression<Func<Role, bool>> exp)
-        => await entity.Roles.AnyAsync(exp);
+        => await _entity.Roles.AnyAsync(exp);
 
     public async Task<List<Role>> Filter(Expression<Func<Role, bool>> exp)
-        => await entity.Roles.Where(exp).ToListAsync();
+        => await _entity.Roles.Where(exp).ToListAsync();
 }

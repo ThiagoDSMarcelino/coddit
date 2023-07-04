@@ -2,8 +2,10 @@
 
 namespace Coddit.Controllers;
 
+using DTO.Data;
+using DTO.Response;
 using Model;
-using DTO;
+using Repositories.MemberReposiory;
 
 [ApiController]
 [Route("forum")]
@@ -12,38 +14,53 @@ public class ForumController : Controller
 {
     [HttpPost("create")]
     public async Task<IActionResult> Create(
-        [FromBody] ForumData forumData,
-        [FromServices] IRepository<Member> memberRepo,
+        [FromBody] ForumData data,
+        [FromServices] IMemberRepository memberRepo,
         [FromServices] IRepository<Role> roleRepo,
         [FromServices] IRepository<Forum> forumRepo,
         [FromServices] IRepository<User> userRepo,
         [FromServices] IJWTService jwt)
     {
-        var validation = await jwt.ValidateTokenAsync<JWTData>(forumData.UserToken);
+        var validation = await jwt.ValidateTokenAsync<JWTData>(data.Token);
 
         if (!validation.IsValid)
-            return BadRequest("Invalid Token");
+        {
+            var error = new ErrorResponse
+            {
+                Messages = Array.Empty<string>(),
+                Reason = "Invalid Token"
+            };
 
-        var usedTitle = await forumRepo.Exist(forum => forum.Title == forumData.Title);
+            return BadRequest(error);
+        }
+
+        var usedTitle = await forumRepo.Exist(forum => forum.Title == data.Title);
 
         if (usedTitle)
-            return BadRequest("This title for a forum is already take");
+        {
+            var error = new ErrorResponse
+            {
+                Messages = new string[] { "This title for a forum is already take" },
+                Reason = "A forum with this title already exist"
+            };
 
+            return BadRequest(error);
+        }
 
         var newForum = new Forum()
         {
-            Title = forumData.Title,
-            Description = forumData.Description,
+            Title = data.Title,
+            Description = data.Description,
         };
 
         await forumRepo.Add(newForum);
 
-        var forum = forumRepo.Get(forum => forum.Title == newForum.Title);
-
+        var forum = await forumRepo.Get(forum => forum.Title == newForum.Title);
+        
         await CreateDefaultRoles(forum.Id, roleRepo);
 
-        var user = userRepo.Get(user => user.Id == validation.Data.UserId);
-        var adm = roleRepo.Get(role => role.ForumId == forum.Id && role.IsOwner);
+        var user = await userRepo.Get(user => user.Id == validation.Data.UserId);
+        var adm = await roleRepo.Get(role => role.ForumId == forum.Id && role.IsOwner);
 
         var firstMember = new Member()
         {
@@ -55,54 +72,80 @@ public class ForumController : Controller
         await memberRepo.Add(firstMember);
 
         return Ok();
+
+        static async Task CreateDefaultRoles(long forumId, IRepository<Role> roleRepo)
+        {
+            var admRole = new Role()
+            {
+                ForumId = forumId,
+                Title = "ADM",
+                IsOwner = true,
+                IsDefault = false,
+            };
+
+            var defaultRole = new Role()
+            {
+                ForumId = forumId,
+                Title = "Default",
+                IsOwner = false,
+                IsDefault = true,
+            };
+
+            await roleRepo.Add(admRole);
+            await roleRepo.Add(defaultRole);
+        }
     }
 
-    //private static async Task<IActionResult> CreateDefaultRoles(int forumId, IRepository<Role> roleRepo)
-    //{
-    //    var admRole = new Role()
-    //    {
-    //        ForumId = forumId,
-    //        Title = "ADM",
-    //        IsOwner = true,
-    //        IsDefault = false,
-    //    };
 
-    //    var defaultRole = new Role()
-    //    {
-    //        ForumId = forumId,
-    //        Title = "Default",
-    //        IsOwner = false,
-    //        IsDefault = true,
-    //    };
+    [HttpPost]
+    public async Task<ActionResult> GetForuns(
+        [FromBody] UserResponse data,
+        [FromServices] IRepository<User> userRepo,
+        [FromServices] IMemberRepository memberRepo,
+        [FromServices] IJWTService jwt,
+        string q = "")
+    {
+        var validation = await jwt.ValidateTokenAsync<JWTData>(data.Token);
 
-    //    await roleRepo.Add(admRole);
-    //    await roleRepo.Add(defaultRole);
-    //}
+        if (!validation.IsValid)
+        {
+            var error = new ErrorResponse
+            {
+                Messages = Array.Empty<string>(),
+                Reason = "Invalid Token"
+            };
 
-    //[HttpGet("{token}")]
-    //public async Task<IActionResult> GetForuns(
-    //    string token,
-    //    [FromServices] IRepository<User> userRepo,
-    //    [FromServices] IRepository<Forum> forumRepo,
-    //    [FromServices] IRepository<Member> memberRepo,
-    //    [FromServices] IJWTService jwt)
-    //{
-    //    var validationResult = await jwt.ValidateTokenAsync<JWTData>(token);
+            return BadRequest(error);
+        }
 
-    //    if (!validationResult.IsValid)
-    //        return BadRequest("Invalid token");
+        var user = await userRepo.Get(user => user.Id == validation.Data.UserId);
 
-    //    var user = await userRepo.Get(user => user.Id == validationResult.Data.UserId);
+        Console.WriteLine(user.Username);
 
-    //    if (user == null)
-    //        return BadRequest();
+        if (user is null)
+        {
+            var error = new ErrorResponse
+            {
+                Messages = Array.Empty<string>(),
+                Reason = "User don't found"
+            };
 
-    //    var memberFrom = await memberRepo.Filter(member => member.UserId == user.Id);
+            return BadRequest(error);
+        }
 
-    //    var forumIds = memberFrom.Select(member => member.ForumId);
+        var memberFrom = await memberRepo
+            .FilterWithForums(member => member.UserId == user.Id);
 
-    //    var forums = await forumRepo.Filter(forum => forumIds.Contains(forum.Id));
+        var forums = memberFrom
+            .Select(member => member.Forum)
+            .Where(forum => forum.Title.Contains(q))
+            .Select(forum => new ForumResponse()
+                {
+                Title = forum.Title,
+                Description = forum.Description
+                })
+            .ToList();
 
-    //    return Ok(forums);
-    //}
+        return Ok(forums);
+    }
 }

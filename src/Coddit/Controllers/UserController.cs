@@ -2,6 +2,8 @@ using Securitas.JWT;
 
 namespace Coddit.Controllers;
 
+using Coddit.DTO.Data;
+using Coddit.DTO.Response;
 using DTO;
 using Model;
 using Services;
@@ -12,7 +14,7 @@ using Services;
 public class StudentController : ControllerBase
 {
     [HttpPost("signup")]
-    public async Task<ActionResult<UserData>> SignUp(
+    public async Task<ActionResult<UserResponse>> SignUp(
         [FromBody] UserData userData,
         [FromServices] IJWTService jwt,
         [FromServices] IRepository<User> usersRepo,
@@ -29,7 +31,15 @@ public class StudentController : ControllerBase
             messages.Add("User-name already used");
 
         if (messages.Any())
-            return BadRequest(messages);
+        {
+            var error = new ErrorResponse
+            {
+                Messages = messages.ToArray(),
+                Reason = "registration error"
+            };
+
+            return BadRequest(error);
+        }
 
         var salt = security.GenerateSalt(16);
 
@@ -56,11 +66,16 @@ public class StudentController : ControllerBase
 
         var token = jwt.GenerateToken(data);
 
-        return Ok(new { token });
+        var tokenData = new UserResponse()
+        {
+            Token = token
+        };
+
+        return tokenData;
     }
 
     [HttpPost("signin")]
-    public async Task<ActionResult<UserData>> SignIn(
+    public async Task<ActionResult<UserResponse>> SignIn(
         [FromBody] UserData userData,
         [FromServices] IJWTService jwt,
         [FromServices] IRepository<User> usersRepo,
@@ -71,12 +86,28 @@ public class StudentController : ControllerBase
             user.Username == userData.Login);
 
         if (user is null)
-            return BadRequest("Login is incorrect or isn't castrated");
+        {
+            var error = new ErrorResponse
+            {
+                Messages = new string[] { "Login is incorrect" },
+                Reason = "Login don't find in database"
+            };
+
+            return BadRequest(error);
+        }
         
         var hashedPassword = security.HashPassword(userData.Password, user.Salt);
 
         if (hashedPassword != user.Password)
-            return BadRequest("Password is incorrect");
+        {
+            var error = new ErrorResponse
+            {
+                Messages = new string[] { "Password is incorrect" },
+                Reason = "password didn't match"
+            };
+
+            return BadRequest(error);
+        }
 
 
         var data = new JWTData()
@@ -87,6 +118,11 @@ public class StudentController : ControllerBase
 
         var token = jwt.GenerateToken(data);
 
-        return Ok(new { token });
+        var tokenData = new UserResponse()
+        {
+            Token = token
+        };
+
+        return tokenData;
     }
 }

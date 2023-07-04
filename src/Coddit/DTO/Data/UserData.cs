@@ -1,4 +1,4 @@
-namespace Coddit.DTO;
+namespace Coddit.DTO.Data;
 
 public class UserData
 {
