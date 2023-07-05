@@ -2,19 +2,18 @@
 
 namespace Coddit.Controllers;
 
-using DTO.Data;
-using DTO.Response;
+using DTO;
 using Model;
 using Repositories.MemberReposiory;
 
 [ApiController]
 [Route("forum")]
 [EnableCors("MainPolicy")]
-public class ForumController : Controller
+public class ForumController : ControllerBase
 {
     [HttpPost("create")]
     public async Task<IActionResult> Create(
-        [FromBody] ForumData data,
+        [FromBody] CreateForum data,
         [FromServices] IMemberRepository memberRepo,
         [FromServices] IRepository<Role> roleRepo,
         [FromServices] IRepository<Forum> forumRepo,
@@ -25,7 +24,7 @@ public class ForumController : Controller
 
         if (!validation.IsValid)
         {
-            var error = new ErrorResponse
+            var error = new ErrorData
             {
                 Messages = Array.Empty<string>(),
                 Reason = "Invalid Token"
@@ -38,7 +37,7 @@ public class ForumController : Controller
 
         if (usedTitle)
         {
-            var error = new ErrorResponse
+            var error = new ErrorData
             {
                 Messages = new string[] { "This title for a forum is already take" },
                 Reason = "A forum with this title already exist"
@@ -96,43 +95,9 @@ public class ForumController : Controller
         }
     }
 
-    [HttpPost]
-    public async Task<ActionResult<List<ForumResponse>>> GetForunsByQuery(
-        [FromBody] UserResponse data,
-        [FromServices] IRepository<Forum> forumRepo,
-        [FromServices] IJWTService jwt,
-        string q = "")
-    {
-        var validation = await jwt.ValidateTokenAsync<JWTData>(data.Token);
-
-        if (!validation.IsValid)
-        {
-            var error = new ErrorResponse
-            {
-                Messages = Array.Empty<string>(),
-                Reason = "Invalid Token"
-            };
-
-            return BadRequest(error);
-        }
-
-        var allForums = await forumRepo.Filter(f => true);
-
-        var forums = allForums
-            .Where(forum => forum.Title.Contains(q))
-            .Select(forum => new ForumResponse()
-                {
-                Title = forum.Title,
-                Description = forum.Description
-                })
-            .ToList();
-
-        return forums;
-    }
-
-    [HttpPost("userForums")]
-    public async Task<ActionResult<List<ForumResponse>>> GetForumsByUser(
-        [FromBody] UserResponse data,
+    [HttpPost("userforums")]
+    public async Task<ActionResult<List<ForumData>>> GetByUser(
+        [FromBody] UserData data,
         [FromServices] IRepository<User> userRepo,
         [FromServices] IMemberRepository memberRepo,
         [FromServices] IJWTService jwt)
@@ -141,7 +106,7 @@ public class ForumController : Controller
 
         if (!validation.IsValid)
         {
-            var error = new ErrorResponse
+            var error = new ErrorData
             {
                 Messages = Array.Empty<string>(),
                 Reason = "Invalid Token"
@@ -154,7 +119,7 @@ public class ForumController : Controller
 
         if (user is null)
         {
-            var error = new ErrorResponse
+            var error = new ErrorData
             {
                 Messages = Array.Empty<string>(),
                 Reason = "User don't found"
@@ -167,10 +132,58 @@ public class ForumController : Controller
             .FilterWithForums(member => member.UserId == user.Id);
 
         var forums = memberFrom
-            .Select(member => new ForumResponse()
+            .Select(member => new ForumData()
             {
                 Title = member.Forum.Title,
-                Description = member.Forum.Description
+                Description = member.Forum.Description,
+                IsMember = member.UserId == user.Id
+            })
+            .ToList();
+
+        return forums;
+    }
+
+    [HttpPost("newforums")]
+    public async Task<ActionResult<List<ForumData>>> GetNew(
+        [FromBody] UserData data,
+        [FromServices] IRepository<User> userRepo,
+        [FromServices] IRepository<Forum> forumRepo,
+        [FromServices] IJWTService jwt)
+    {
+        var validation = await jwt.ValidateTokenAsync<JWTData>(data.Token);
+
+        if (!validation.IsValid)
+        {
+            var error = new ErrorData
+            {
+                Messages = Array.Empty<string>(),
+                Reason = "Invalid Token"
+            };
+
+            return BadRequest(error);
+        }
+
+        var user = await userRepo.Get(user => user.Id == validation.Data.UserId);
+
+        if (user is null)
+        {
+            var error = new ErrorData
+            {
+                Messages = Array.Empty<string>(),
+                Reason = "User don't found"
+            };
+
+            return BadRequest(error);
+        }
+
+        var allForums = await forumRepo.Filter(f => true);
+
+        var forums = allForums
+            .Select(forum => new ForumData()
+            {
+                Title = forum.Title,
+                Description = forum.Description,
+                IsMember = forum.Members.Any(member => member.UserId == user.Id)
             })
             .ToList();
 

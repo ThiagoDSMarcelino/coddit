@@ -1,4 +1,7 @@
-﻿namespace Coddit.Model;
+﻿using System;
+using System.Collections.Generic;
+
+namespace Coddit.Model;
 
 public partial class Post
 {
@@ -10,7 +13,7 @@ public partial class Post
 
     public string Title { get; set; }
 
-    public string Message { get; set; }
+    public string Content { get; set; }
 
     public byte[] Attachment { get; set; }
 

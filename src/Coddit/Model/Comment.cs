@@ -1,4 +1,7 @@
-﻿namespace Coddit.Model;
+﻿using System;
+using System.Collections.Generic;
+
+namespace Coddit.Model;
 
 public partial class Comment
 {

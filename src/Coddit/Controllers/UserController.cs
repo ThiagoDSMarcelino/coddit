@@ -2,8 +2,7 @@ using Securitas.JWT;
 
 namespace Coddit.Controllers;
 
-using Coddit.DTO.Data;
-using Coddit.DTO.Response;
+using DTO;
 using Model;
 using Services;
 
@@ -13,8 +12,8 @@ using Services;
 public class StudentController : ControllerBase
 {
     [HttpPost("signup")]
-    public async Task<ActionResult<UserResponse>> SignUp(
-        [FromBody] UserData userData,
+    public async Task<ActionResult<UserData>> SignUp(
+        [FromBody] CreateUser userData,
         [FromServices] IJWTService jwt,
         [FromServices] IRepository<User> usersRepo,
         [FromServices] ISecurityService security)
@@ -31,7 +30,7 @@ public class StudentController : ControllerBase
 
         if (messages.Any())
         {
-            var error = new ErrorResponse
+            var error = new ErrorData
             {
                 Messages = messages.ToArray(),
                 Reason = "registration error"
@@ -65,7 +64,7 @@ public class StudentController : ControllerBase
 
         var token = jwt.GenerateToken(data);
 
-        var tokenData = new UserResponse()
+        var tokenData = new UserData()
         {
             Token = token
         };
@@ -74,8 +73,8 @@ public class StudentController : ControllerBase
     }
 
     [HttpPost("signin")]
-    public async Task<ActionResult<UserResponse>> SignIn(
-        [FromBody] UserData userData,
+    public async Task<ActionResult<UserData>> SignIn(
+        [FromBody] CreateUser userData,
         [FromServices] IJWTService jwt,
         [FromServices] IRepository<User> usersRepo,
         [FromServices] ISecurityService security)
@@ -86,7 +85,7 @@ public class StudentController : ControllerBase
 
         if (user is null)
         {
-            var error = new ErrorResponse
+            var error = new ErrorData
             {
                 Messages = new string[] { "Login is incorrect" },
                 Reason = "Login don't find in database"
@@ -99,7 +98,7 @@ public class StudentController : ControllerBase
 
         if (hashedPassword != user.Password)
         {
-            var error = new ErrorResponse
+            var error = new ErrorData
             {
                 Messages = new string[] { "Password is incorrect" },
                 Reason = "password didn't match"
@@ -117,7 +116,7 @@ public class StudentController : ControllerBase
 
         var token = jwt.GenerateToken(data);
 
-        var tokenData = new UserResponse()
+        var tokenData = new UserData()
         {
             Token = token
         };

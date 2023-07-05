@@ -1,6 +1,6 @@
-﻿namespace Coddit.DTO.Response;
+﻿namespace Coddit.DTO;
 
-public class ErrorResponse
+public class ErrorData
 {
     public string[] Messages { get; set; }
 

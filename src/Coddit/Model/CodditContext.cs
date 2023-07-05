@@ -1,17 +1,19 @@
-﻿using Securitas;
+﻿using System;
+using System.Collections.Generic;
+using Microsoft.EntityFrameworkCore;
 
 namespace Coddit.Model;
 
 public partial class CodditContext : DbContext
 {
-    private readonly EnvironmentFile _env;
+    public CodditContext()
+    {
+    }
 
-    public CodditContext(EnvironmentFile env)
-        => _env = env;
-
-    public CodditContext(DbContextOptions<CodditContext> options, EnvironmentFile env)
+    public CodditContext(DbContextOptions<CodditContext> options)
         : base(options)
-        => _env = env;
+    {
+    }
 
     public virtual DbSet<Comment> Comments { get; set; }
 
@@ -32,13 +34,14 @@ public partial class CodditContext : DbContext
     public virtual DbSet<Vote> Votes { get; set; }
 
     protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
-        => optionsBuilder.UseSqlServer($"Data Source={_env.Get("DATABASE")};Initial Catalog=Coddit;Integrated Security=True;TrustServerCertificate=true");
+#warning To protect potentially sensitive information in your connection string, you should move it out of source code. You can avoid scaffolding the connection string by using the Name= syntax to read it from configuration - see https://go.microsoft.com/fwlink/?linkid=2131148. For more guidance on storing connection strings, see http://go.microsoft.com/fwlink/?LinkId=723263.
+        => optionsBuilder.UseSqlServer("Data Source=CT-C-00187\\SQLEXPRESS;Initial Catalog=Coddit;Integrated Security=True;TrustServerCertificate=true");
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
         modelBuilder.Entity<Comment>(entity =>
         {
-            entity.HasKey(e => e.Id).HasName("PK__Comments__3214EC27B43CD96B");
+            entity.HasKey(e => e.Id).HasName("PK__Comments__3214EC27B716B427");
 
             entity.Property(e => e.Id).HasColumnName("ID");
             entity.Property(e => e.CommentId).HasColumnName("CommentID");
@@ -68,9 +71,9 @@ public partial class CodditContext : DbContext
 
         modelBuilder.Entity<Forum>(entity =>
         {
-            entity.HasKey(e => e.Id).HasName("PK__Forums__3214EC278C2D0B45");
+            entity.HasKey(e => e.Id).HasName("PK__Forums__3214EC2763670485");
 
-            entity.HasIndex(e => e.Title, "UQ__Forums__2CB664DCBCA846BC").IsUnique();
+            entity.HasIndex(e => e.Title, "UQ__Forums__2CB664DC24F72358").IsUnique();
 
             entity.Property(e => e.Id).HasColumnName("ID");
             entity.Property(e => e.CreatedAt)
@@ -88,7 +91,7 @@ public partial class CodditContext : DbContext
 
         modelBuilder.Entity<HasPermission>(entity =>
         {
-            entity.HasKey(e => e.Id).HasName("PK__HasPermi__3214EC27F4C0E82D");
+            entity.HasKey(e => e.Id).HasName("PK__HasPermi__3214EC27A74BE892");
 
             entity.ToTable("HasPermission");
 
@@ -109,7 +112,7 @@ public partial class CodditContext : DbContext
 
         modelBuilder.Entity<Member>(entity =>
         {
-            entity.HasKey(e => e.Id).HasName("PK__Members__3214EC2770C4FD80");
+            entity.HasKey(e => e.Id).HasName("PK__Members__3214EC27E1FDA961");
 
             entity.Property(e => e.Id).HasColumnName("ID");
             entity.Property(e => e.ForumId).HasColumnName("ForumID");
@@ -134,9 +137,9 @@ public partial class CodditContext : DbContext
 
         modelBuilder.Entity<Permission>(entity =>
         {
-            entity.HasKey(e => e.Id).HasName("PK__Permissi__3214EC2718A2F609");
+            entity.HasKey(e => e.Id).HasName("PK__Permissi__3214EC276524F787");
 
-            entity.HasIndex(e => e.Title, "UQ__Permissi__2CB664DCB243B5B6").IsUnique();
+            entity.HasIndex(e => e.Title, "UQ__Permissi__2CB664DC0FA561D9").IsUnique();
 
             entity.Property(e => e.Id).HasColumnName("ID");
             entity.Property(e => e.Title)
@@ -147,17 +150,17 @@ public partial class CodditContext : DbContext
 
         modelBuilder.Entity<Post>(entity =>
         {
-            entity.HasKey(e => e.Id).HasName("PK__Posts__3214EC277170B7BD");
+            entity.HasKey(e => e.Id).HasName("PK__Posts__3214EC2796BB7A08");
 
             entity.Property(e => e.Id).HasColumnName("ID");
+            entity.Property(e => e.Content)
+                .IsRequired()
+                .HasMaxLength(255)
+                .IsUnicode(false);
             entity.Property(e => e.CreatedAt)
                 .HasDefaultValueSql("(getdate())")
                 .HasColumnType("date");
             entity.Property(e => e.ForumId).HasColumnName("ForumID");
-            entity.Property(e => e.Message)
-                .IsRequired()
-                .HasMaxLength(255)
-                .IsUnicode(false);
             entity.Property(e => e.Title)
                 .IsRequired()
                 .HasMaxLength(50)
@@ -177,7 +180,7 @@ public partial class CodditContext : DbContext
 
         modelBuilder.Entity<Role>(entity =>
         {
-            entity.HasKey(e => e.Id).HasName("PK__Roles__3214EC277B46B769");
+            entity.HasKey(e => e.Id).HasName("PK__Roles__3214EC2733AFF123");
 
             entity.Property(e => e.Id).HasColumnName("ID");
             entity.Property(e => e.ForumId).HasColumnName("ForumID");
@@ -194,11 +197,11 @@ public partial class CodditContext : DbContext
 
         modelBuilder.Entity<User>(entity =>
         {
-            entity.HasKey(e => e.Id).HasName("PK__Users__3214EC279A777999");
+            entity.HasKey(e => e.Id).HasName("PK__Users__3214EC273666CD92");
 
-            entity.HasIndex(e => e.Username, "UQ__Users__536C85E4289F1577").IsUnique();
+            entity.HasIndex(e => e.Username, "UQ__Users__536C85E4394E26D6").IsUnique();
 
-            entity.HasIndex(e => e.Email, "UQ__Users__A9D105345EE02B49").IsUnique();
+            entity.HasIndex(e => e.Email, "UQ__Users__A9D10534A798C9E1").IsUnique();
 
             entity.Property(e => e.Id).HasColumnName("ID");
             entity.Property(e => e.BirthDate).HasColumnType("date");
@@ -228,7 +231,7 @@ public partial class CodditContext : DbContext
 
         modelBuilder.Entity<Vote>(entity =>
         {
-            entity.HasKey(e => e.Id).HasName("PK__Vote__3214EC27E446DEDD");
+            entity.HasKey(e => e.Id).HasName("PK__Vote__3214EC27834C411C");
 
             entity.ToTable("Vote");
 

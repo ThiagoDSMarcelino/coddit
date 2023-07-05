@@ -35,7 +35,7 @@ CREATE TABLE [Posts] (
     [UserID] BIGINT REFERENCES Users(ID) NOT NULL,
     [ForumID] BIGINT REFERENCES Forums(ID) NOT NULL,
     [Title] VARCHAR(50) NOT NULL,
-    [Message] VARCHAR(255) NOT NULL,
+    [Content] VARCHAR(255) NOT NULL,
     [Attachment] VARBINARY(MAX) NULL,
 	[CreatedAt] DATE NOT NULL DEFAULT GETDATE()
 );

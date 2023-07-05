@@ -1,6 +1,6 @@
-namespace Coddit.DTO.Data;
+namespace Coddit.DTO;
 
-public class UserData
+public class CreateUser
 {
     public string Login { get; set; }
     public string Email { get; set; }

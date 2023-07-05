@@ -1,4 +1,4 @@
-namespace Coddit.DTO.Data;
+namespace Coddit.DTO;
 
 public class JWTData
 {
