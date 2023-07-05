@@ -1,7 +1,7 @@
 import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
-import { UserResponse } from 'src/app/DTO/post-data';
 
+import { UserResponse } from 'src/app/models/response/user-response';
 import { environment } from 'src/environment';
 
 @Injectable({
@@ -11,6 +11,6 @@ export class PostService {
 
   constructor(private http: HttpClient) { }
   
-  create = (post: UserResponse) =>
-    this.http.post(`${environment.BACKEND_URL}/post/create`, post)
+  getPostByUser = (post: UserResponse, query: string) =>
+    this.http.post(`${environment.BACKEND_URL}/post?q=${query}`, post)
 }

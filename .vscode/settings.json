@@ -3,8 +3,10 @@
         "Coddit",
         "IJWT",
         "myforums",
+        "newforums",
         "Securitas",
-        "signin"
+        "signin",
+        "userforums"
     ],
     "cSpell.ignorePaths": [
         "package-lock.json",

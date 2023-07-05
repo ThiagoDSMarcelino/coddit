@@ -16,9 +16,9 @@ export class ForumService {
   create = (forum: ForumData) =>
     this.http.post(`${environment.BACKEND_URL}/forum/create`, forum)
 
-  get = (user: UserResponse, query: string) =>
-    this.http.post<ForumResponse[]>(`${environment.BACKEND_URL}/forum?q=${query}`, user)
+  getUserForums = (user: UserResponse) =>
+    this.http.post<ForumResponse[]>(`${environment.BACKEND_URL}/forum/userforums`, user)
 
-  getAll = (user: UserResponse) =>
-    this.http.post<ForumResponse[]>(`${environment.BACKEND_URL}/forum/userForums`, user)
+  getNewForums = (user: UserResponse) =>
+    this.http.post<ForumResponse[]>(`${environment.BACKEND_URL}/forum/newforums`, user)
 }

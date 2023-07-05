@@ -30,7 +30,7 @@ export class MyForumsComponent {
       token: token
     }
 
-    this.service.getAll(tokenData).subscribe({
+    this.service.getNewForums(tokenData).subscribe({
       next: (res) => {
         this.communities = res
       },

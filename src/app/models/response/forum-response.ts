@@ -1,4 +1,5 @@
 export interface ForumResponse {
     title: string,
-    description: string
+    description: string,
+    isMember: boolean
 }

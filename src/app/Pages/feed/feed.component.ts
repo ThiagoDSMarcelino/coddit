@@ -4,10 +4,10 @@ import { Component } from '@angular/core';
 import { Router } from '@angular/router';
 
 import { CreateForumComponent } from 'src/app/components/create-forum/create-forum.component';
-import { ForumService } from 'src/app/services/forum/forum.service';
 import { PostInfoComponent } from 'src/app/components/post-info/post-info.component';
-import verifyError from 'src/app/services/error/verify-error';
 import { UserResponse } from 'src/app/models/response/user-response';
+import { PostService } from 'src/app/services/post/post.service';
+import verifyError from 'src/app/services/error/verify-error';
 
 @Component({
   selector: 'app-feed',
@@ -20,7 +20,7 @@ export class FeedComponent {
   
   constructor(
     private router: Router,
-    private service: ForumService) { }
+    private service: PostService) { }
   
   Posts = Array(5)
   Data = ''
@@ -40,7 +40,7 @@ export class FeedComponent {
     const tokenData: UserResponse = {
       token: token
     }
-    this.service.get(tokenData, this.Data).subscribe({
+    this.service.getPostByUser(tokenData, this.Data).subscribe({
       next: (value) => {
         console.log(value)
       },
