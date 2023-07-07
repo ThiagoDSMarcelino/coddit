@@ -1,9 +1,8 @@
-﻿using Securitas.JWT;
+﻿namespace Coddit.Controllers;
 
-namespace Coddit.Controllers;
-
-using Repositories;
 using DTO;
+using Repositories;
+using Services;
 
 [ApiController]
 [Route("post")]
@@ -13,57 +12,42 @@ public class PostController : ControllerBase
     [HttpPost]
     public async Task<ActionResult<List<PostData>>> GetPostByUser(
         [FromBody] UserData data,
-        [FromServices] IRepository<User> userRepo,
-        [FromServices] IForumRepository forumRepo,
         [FromServices] IMemberRepository memberRepo,
-        [FromServices] IJWTService jwt,
+        [FromServices] ISecurityService securityService,
         string q = "")
     {
-        var validation = await jwt.ValidateTokenAsync<JWTData>(data.Token);
+        var userValidate = await securityService.ValidateUserAsync(data.Token);
 
-        if (!validation.IsValid || validation.Data is null)
+        if (userValidate.User is null)
         {
             var error = new ErrorData
             {
                 Messages = Array.Empty<string>(),
-                Reason = "Invalid Token"
+                Reason = "Invalid Token",
             };
 
             return BadRequest(error);
         }
 
-        var user = await userRepo.Get(user => user.Id == validation.Data!.UserId);
-
-        if (user is null)
-        {
-            var error = new ErrorData
-            {
-                Messages = Array.Empty<string>(),
-                Reason = "User don't found"
-            };
-
-            return BadRequest(error);
-        }
-
+        var user = userValidate.User;
 
         var memberFrom = await memberRepo
-            .FilterWithForums(member => member.UserId == user.Id);
+            .FilterWithForumsAndPost(member =>
+                member.UserId == user.Id &&
+                member.Forum.Title.Contains(q)
+            );
 
-        var forums = await forumRepo.FilterWithPost(f => memberFrom.Any(m => m.Forum.Id == f.Id) && f.Title.Contains(q));
-
-        var posts = forums
-            .SelectMany(f => f.Posts)
-            .Select(post => new PostData()
+        var posts = memberFrom
+            .Select(member => member.Forum)
+            .SelectMany(forum => forum.Posts
+                .Select(post => new PostData()
                 {
                     Title = post.Title,
                     Content = post.Content,
                     CreateAt = post.CreatedAt,
-                    ForumName = forums.First(f => f.Id == post.ForumId).Title
+                    ForumName = forum.Title
                 })
-            .ToList();
-
-        Console.WriteLine(forums[0].Title);
-        Console.WriteLine(posts.Count);
+            ).ToList();
 
         return posts;
     }

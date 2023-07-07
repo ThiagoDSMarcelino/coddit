@@ -1,10 +1,8 @@
-﻿using Securitas.JWT;
+﻿namespace Coddit.Controllers;
 
-namespace Coddit.Controllers;
-
-using Repositories;
 using DTO;
 using Model;
+using Repositories;
 using Services;
 
 [ApiController]
@@ -12,43 +10,6 @@ using Services;
 [EnableCors("MainPolicy")]
 public class ForumController : ControllerBase
 {
-    [HttpPost("{forumTitle}")]
-    public async Task<ActionResult<ForumData>> Get(
-        string forumTitle,
-        [FromBody] UserData data,
-        [FromServices] IForumRepository forumRepo,
-        [FromServices] ISecurityService securityService)
-    {
-        var userValidate = await securityService.ValidateUserAsync(data.Token);
-
-        if (userValidate.User is null)
-        {
-            var error = new ErrorData
-            {
-                Messages = Array.Empty<string>(),
-                Reason = "Invalid Token",
-            };
-
-            return BadRequest(error);
-        }
-
-        var user = userValidate.User;
-
-        var forum = await forumRepo.Get(f => f.Title == forumTitle);
-
-        if (forum is null)
-            return NotFound();
-
-        var result = new ForumData()
-            {
-                Title = forum.Title,
-                Description = forum.Description,
-                IsMember = forum.Members.Any(member => member.UserId == user.Id)
-            };
-
-        return result;
-    }
-
     [HttpPost("create")]
     public async Task<IActionResult> Create(
         [FromBody] CreateForum data,
@@ -132,11 +93,60 @@ public class ForumController : ControllerBase
             await roleRepo.Add(defaultRole);
         }
     }
+    
+    [HttpPost("{forumTitle}")]
+    public async Task<ActionResult<ForumPageData>> Get(
+        string forumTitle,
+        [FromBody] UserData data,
+        [FromServices] IForumRepository forumRepo,
+        [FromServices] ISecurityService securityService)
+    {
+        var userValidate = await securityService.ValidateUserAsync(data.Token);
 
-    [HttpPost("userforums")]
+        if (userValidate.User is null)
+        {
+            var error = new ErrorData
+            {
+                Messages = Array.Empty<string>(),
+                Reason = "Invalid Token",
+            };
+
+            return BadRequest(error);
+        }
+
+        var user = userValidate.User;
+
+        var forum = await forumRepo.GetWithPost(f => f.Title == forumTitle);
+
+        if (forum is null)
+            return NotFound();
+
+        var result = new ForumPageData
+        {
+            Forum = new ForumData()
+            {
+                Title = forum.Title,
+                Description = forum.Description,
+                IsMember = forum.Members.Any(member => member.UserId == user.Id)
+            },
+
+            Posts = forum.Posts
+                .Select(post => new PostData()
+                {
+                    Title = post.Title,
+                    Content = post.Content,
+                    CreateAt = post.CreatedAt,
+                    ForumName = forum.Title
+                })
+                .ToList()
+        };
+
+        return result;
+    }
+
+    [HttpPost("byUser")]
     public async Task<ActionResult<List<ForumData>>> GetByUser(
         [FromBody] UserData data,
-        [FromServices] IRepository<User> userRepo,
         [FromServices] IMemberRepository memberRepo,
         [FromServices] ISecurityService securityService)
     {
@@ -170,10 +180,9 @@ public class ForumController : ControllerBase
         return forums;
     }
 
-    [HttpPost("newforums")]
-    public async Task<ActionResult<List<ForumData>>> GetNew(
+    [HttpPost]
+    public async Task<ActionResult<List<ForumData>>> GetAll(
         [FromBody] UserData data,
-        [FromServices] IRepository<User> userRepo,
         [FromServices] IForumRepository forumRepo,
         [FromServices] ISecurityService securityService,
         string q = "")

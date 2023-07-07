@@ -11,8 +11,8 @@ using Services;
 [EnableCors("MainPolicy")]
 public class StudentController : ControllerBase
 {
-    [HttpPost("signup")]
-    public async Task<ActionResult<UserData>> SignUp(
+    [HttpPost("create")]
+    public async Task<ActionResult<UserData>> Create(
         [FromBody] CreateUser userData,
         [FromServices] IJWTService jwt,
         [FromServices] IRepository<User> usersRepo,
@@ -72,9 +72,9 @@ public class StudentController : ControllerBase
         return Created("", tokenData);
     }
 
-    [HttpPost("signin")]
-    public async Task<ActionResult<UserData>> SignIn(
-        [FromBody] CreateUser userData,
+    [HttpPost]
+    public async Task<ActionResult<UserData>> Get(
+        [FromBody] LoginUser userData,
         [FromServices] IJWTService jwt,
         [FromServices] IRepository<User> usersRepo,
         [FromServices] ISecurityService security)

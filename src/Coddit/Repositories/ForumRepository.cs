@@ -40,6 +40,6 @@ public class ForumRepository : IForumRepository
     public async Task<List<Forum>> FilterWithMembers(Expression<Func<Forum, bool>> exp)
         => await _entity.Forums.Where(exp).Include(f => f.Members).ToListAsync();
 
-    public async Task<List<Forum>> FilterWithPost(Expression<Func<Forum, bool>> exp)
-        => await _entity.Forums.Where(exp).Include(f => f.Posts).ToListAsync();
+    public async Task<Forum?> GetWithPost(Expression<Func<Forum, bool>> exp)
+        => await _entity.Forums.Include(f => f.Posts).FirstOrDefaultAsync(exp);
 }

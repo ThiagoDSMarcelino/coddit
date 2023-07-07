@@ -38,4 +38,7 @@ public class MemberRepository : IMemberRepository
 
     public async Task<List<Member>> FilterWithForums(Expression<Func<Member, bool>> exp)
         => await _entity.Members.Where(exp).Include(m => m.Forum).ToListAsync();
+
+    public async Task<List<Member>> FilterWithForumsAndPost(Expression<Func<Member, bool>> exp)
+        => await _entity.Members.Where(exp).Include(m => m.Forum).Include(m => m.Forum.Posts).ToListAsync();
 }
