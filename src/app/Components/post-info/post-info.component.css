@@ -1,3 +1,8 @@
+.box {
+    border: solid black 1px;
+    border-radius: 15px;
+    padding: 10px 15px;
+}
 
 .custom-btn {
     width: 88px;

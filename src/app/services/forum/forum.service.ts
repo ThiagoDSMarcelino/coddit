@@ -14,15 +14,15 @@ export class ForumService {
 
   constructor(private http: HttpClient) { }
 
-  get = (user: UserData, title: string) =>
-    this.http.post<ForumPageData>(`${environment.BACKEND_URL}/forum/${title}`, user)
-
   create = (forum: CreateForumData) =>
     this.http.post(`${environment.BACKEND_URL}/forum/create`, forum)
+    
+  get = (user: UserData, title: string) =>
+    this.http.post<ForumPageData>(`${environment.BACKEND_URL}/forum/${title}`, user)
+    
+  getAll = (user: UserData, q: string) =>
+    this.http.post<ForumData[]>(`${environment.BACKEND_URL}/forum?q=${q}`, user)
 
-  getUserForums = (user: UserData) =>
-    this.http.post<ForumData[]>(`${environment.BACKEND_URL}/forum/userForums`, user)
-
-  getNewForums = (user: UserData) =>
-    this.http.post<ForumData[]>(`${environment.BACKEND_URL}/forum/newForums`, user)
+  getByUser = (user: UserData) =>
+    this.http.post<ForumData[]>(`${environment.BACKEND_URL}/forum/byUser`, user)
 }

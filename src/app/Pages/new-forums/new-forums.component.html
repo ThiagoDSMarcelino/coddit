@@ -2,8 +2,8 @@
     <div class="row gy-4 justify-content-center">
         <div class="col-4 offset-1 d-flex">
             <input class="form-control me-2" type="search" placeholder="Search a forum" aria-label="Search"
-                style="border: solid black 1px;" [(ngModel)]="Data" [ngModelOptions]="{standalone: true}">
-            <button type="button" class="btn btn-outline-success" (click)="Search()">Search</button>
+                style="border: solid black 1px;" [(ngModel)]="data" [ngModelOptions]="{standalone: true}">
+            <button type="button" class="btn btn-outline-success" (click)="search()">Search</button>
         </div>
 
         <div class="col-2">
@@ -11,15 +11,15 @@
         </div>
 
         <div class="col-8 my-4" style="text-align: center;">
-            <span *ngIf="!hasCommunities()">
+            <h2 *ngIf="!hasCommunities()">
                 Looks like aren't any forum created yet, create your own forum clicking in the button above
-            </span>
+            </h2>
             <h2 *ngIf="hasCommunities()">
                 Trending forums
             </h2>
         </div>
         
-        <div class="col-8" *ngFor="let forum of forums; let i = index">
+        <div class="col-8" *ngFor="let forum of forums">
             <app-forum-info [forum]="forum" />
         </div>
     </div>

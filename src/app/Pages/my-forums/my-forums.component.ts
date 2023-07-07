@@ -33,7 +33,7 @@ export class MyForumsComponent {
       token: token
     }
 
-    this.service.getUserForums(tokenData).subscribe({
+    this.service.getByUser(tokenData).subscribe({
       next: (res) => {
         this.forums = res
       },

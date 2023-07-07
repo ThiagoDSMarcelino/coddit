@@ -19,11 +19,26 @@ import { FormsModule } from '@angular/forms';
 })
 export class NewForumsComponent {
   forums: ForumData[] = []
-  Data = ''
+  data = ''
 
   constructor(
     private router: Router,
-    private service: ForumService) {
+    private service: ForumService
+  ) {
+    this.getPosts()
+  }
+
+  hasCommunities = () => this.forums.length > 0
+
+  search = () => {
+    if (this.data === '') {
+      return
+    }
+
+    this.getPosts()
+  }
+
+  getPosts = () => {
     const token = sessionStorage.getItem('token')
 
     if (token === null) {
@@ -35,7 +50,7 @@ export class NewForumsComponent {
       token: token
     }
 
-    this.service.getNewForums(tokenData).subscribe({
+    this.service.getAll(tokenData, this.data).subscribe({
       next: (res) => {
         this.forums = res
       },
@@ -43,20 +58,5 @@ export class NewForumsComponent {
         verifyError(err, this.router)
       },
     })
-  }
-
-  hasCommunities = () => this.forums.length > 0
-
-  Search = () => {
-    const token = sessionStorage.getItem('token')
-    
-    if (token === null) {
-      this.router.navigate(['/signin'])
-      return
-    }
-    
-    if (this.Data === '') {
-      return
-    }
   }
 }

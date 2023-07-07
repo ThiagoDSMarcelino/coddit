@@ -13,10 +13,10 @@ export class UserService {
   constructor(private http: HttpClient) { }
 
   create = (user: CreateUserData) =>
-    this.http.post<UserResponse>(`${environment.BACKEND_URL}/user/signUp`, user)
-
-  login = (user: LoginUserData) =>
-    this.http.post<UserResponse>(`${environment.BACKEND_URL}/user/signIn`, user)
+    this.http.post<UserResponse>(`${environment.BACKEND_URL}/user/create`, user)
+    
+  get = (user: LoginUserData) =>
+    this.http.post<UserResponse>(`${environment.BACKEND_URL}/user`, user)
 }
 
 interface UserResponse {

@@ -68,7 +68,7 @@ export class SignInComponent {
       password: this.Password,
     }
 
-    this.service.login(user).subscribe({
+    this.service.get(user).subscribe({
       next: (res) => {
         sessionStorage.setItem('token', res.token)
         this.router.navigate(['/'])

@@ -5,6 +5,20 @@
             <h5 style="align-items: center;">{{forum.description}}</h5>
         </div>
 
+        <div class="col-6 my-4" style="text-align: center;">
+            <h2 *ngIf="!hasPosts()">
+                Looks like aren't any post created yet
+            </h2>
+            
+            <h2 *ngIf="hasPosts()">
+                Latest posts from this forum
+            </h2>
+        </div>
+        
+        <div class="col-2" *ngIf="forum">
+            <app-create-post [forumTitle]="forum.title" />
+        </div>
+        
         <div class="col-8" *ngFor="let post of posts">
             <app-post-info [post]="post" />
         </div>
