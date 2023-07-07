@@ -1,11 +1,11 @@
-import { Component, OnInit } from '@angular/core';
+import { Component } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { Router } from '@angular/router';
 
 import { ForumService } from 'src/app/services/forum/forum.service';
-import verifyError from 'src/app/services/error/verify-error';
-import { ForumData } from 'src/app/models/data/forum-data';
+import { CreateForumData } from 'src/app/models/create-forum-data';
+import verifyError from 'src/app/services/verify-error';
 
 @Component({
   selector: 'app-create-forum',
@@ -14,15 +14,11 @@ import { ForumData } from 'src/app/models/data/forum-data';
   standalone: true,
   imports: [FormsModule, CommonModule]
 })
-export class CreateForumComponent implements OnInit {
+export class CreateForumComponent {
   
   constructor(
     private router: Router,
     private service: ForumService) { }
-  
-  ngOnInit = () => {
-    // TODO
-  }
 
   Title = ''
   Description = ''
@@ -62,7 +58,7 @@ export class CreateForumComponent implements OnInit {
       return
     }
 
-    const forum: ForumData  = {
+    const forum: CreateForumData  = {
       token: token,
       title: this.Title,
       description: this.Description

@@ -4,9 +4,9 @@ import { Router } from '@angular/router';
 
 import { ForumInfoComponent } from 'src/app/components/forum-info/forum-info.component';
 import { ForumService } from 'src/app/services/forum/forum.service';
-import verifyError from 'src/app/services/error/verify-error';
-import { ForumResponse } from 'src/app/models/response/forum-response';
-import { UserResponse } from 'src/app/models/response/user-response';
+import verifyError from 'src/app/services/verify-error';
+import { ForumData } from 'src/app/models/forum-data';
+import { UserData } from 'src/app/models/user-data';
 
 @Component({
   selector: 'app-my-forums',
@@ -16,7 +16,7 @@ import { UserResponse } from 'src/app/models/response/user-response';
   imports: [ForumInfoComponent, CommonModule]
 })
 export class MyForumsComponent {
-  forums: ForumResponse[] = []
+  forums: ForumData[] = []
 
   constructor(
     private router: Router,
@@ -29,7 +29,7 @@ export class MyForumsComponent {
       return
     }
 
-    const tokenData: UserResponse = {
+    const tokenData: UserData = {
       token: token
     }
 

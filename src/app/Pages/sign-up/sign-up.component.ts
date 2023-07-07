@@ -6,8 +6,8 @@ import { Component } from '@angular/core';
 import { Router } from '@angular/router';
 
 import { UserService } from 'src/app/services/user/user.service';
-import verifyError from 'src/app/services/error/verify-error';
-import { UserData } from 'src/app/models/data/user-data';
+import verifyError from 'src/app/services/verify-error';
+import { CreateUserData } from 'src/app/models/create-user-data';
 
 @Component({
   selector: 'app-sign-up',
@@ -97,8 +97,7 @@ export class SignUpComponent {
       return
     }
 
-    const user: UserData = {
-      login: '',
+    const user: CreateUserData = {
       email: this.Email,
       username: this.Username,
       password: this.Password,

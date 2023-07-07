@@ -4,10 +4,10 @@ import { Router } from '@angular/router';
 
 import { CreateForumComponent } from 'src/app/components/create-forum/create-forum.component';
 import { ForumInfoComponent } from 'src/app/components/forum-info/forum-info.component';
-import { ForumResponse } from 'src/app/models/response/forum-response';
-import { UserResponse } from 'src/app/models/response/user-response';
 import { ForumService } from 'src/app/services/forum/forum.service';
-import verifyError from 'src/app/services/error/verify-error';
+import verifyError from 'src/app/services/verify-error';
+import { ForumData } from 'src/app/models/forum-data';
+import { UserData } from 'src/app/models/user-data';
 import { FormsModule } from '@angular/forms';
 
 @Component({
@@ -18,7 +18,7 @@ import { FormsModule } from '@angular/forms';
   imports: [ForumInfoComponent, CreateForumComponent, CommonModule, FormsModule]
 })
 export class NewForumsComponent {
-  forums: ForumResponse[] = []
+  forums: ForumData[] = []
   Data = ''
 
   constructor(
@@ -31,7 +31,7 @@ export class NewForumsComponent {
       return
     }
 
-    const tokenData: UserResponse = {
+    const tokenData: UserData = {
       token: token
     }
 

@@ -1,7 +1,8 @@
 import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 
-import { UserResponse } from 'src/app/models/response/user-response';
+import { UserData } from 'src/app/models/user-data';
+import { PostData } from 'src/app/models/post-data';
 import { environment } from 'src/environment';
 
 @Injectable({
@@ -11,9 +12,6 @@ export class PostService {
 
   constructor(private http: HttpClient) { }
   
-  getByUser = (post: UserResponse, query: string) =>
-    this.http.post(`${environment.BACKEND_URL}/post?q=${query}`, post)
-
-  getByForum = (post: UserResponse) =>
-    this.http.post(`${environment.BACKEND_URL}/post/`, post)
+  getByUser = (post: UserData, query: string) =>
+    this.http.post<PostData[]>(`${environment.BACKEND_URL}/post?q=${query}`, post)
 }

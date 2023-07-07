@@ -1,0 +1,27 @@
+input, textarea {
+    border: solid black 1px;
+    color: black;
+}
+
+.input-group-text {
+    border: solid black 1px;
+    color: black;
+    border-right: none;
+}
+
+.errors-box {
+    border: solid #D30000 1px;
+    border-radius: 5px;
+    padding: 10px 8px;
+    list-style-type: none;
+}
+
+.error {
+    color: #D30000;
+    font-weight: 600;
+}
+
+.text-link {
+    margin-left: 1rem;
+    vertical-align: bottom;
+}

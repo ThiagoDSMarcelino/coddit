@@ -11,5 +11,5 @@ import { PostInfoComponent } from 'src/app/components/post-info/post-info.compon
   imports: [PostInfoComponent, CommonModule]
 })
 export class FeedComponent {
-  Posts = Array(5)
+  Posts = Array(0)
 }

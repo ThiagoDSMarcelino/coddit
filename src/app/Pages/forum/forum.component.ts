@@ -1,21 +1,25 @@
 import { ActivatedRoute, Router } from '@angular/router';
+import { CommonModule } from '@angular/common';
 import { Component } from '@angular/core';
 
-import { ForumResponse } from 'src/app/models/response/forum-response';
-import { UserResponse } from 'src/app/models/response/user-response';
+import { PostInfoComponent } from 'src/app/components/post-info/post-info.component';
 import { ForumService } from 'src/app/services/forum/forum.service';
 import { PostService } from 'src/app/services/post/post.service';
-import verifyError from 'src/app/services/error/verify-error';
+import verifyError from 'src/app/services/verify-error';
+import { ForumData } from 'src/app/models/forum-data';
+import { UserData } from 'src/app/models/user-data';
+import { PostData } from 'src/app/models/post-data';
 
 @Component({
   selector: 'app-forum',
   templateUrl: './forum.component.html',
   styleUrls: ['./forum.component.css'],
   standalone: true,
+  imports: [CommonModule, PostInfoComponent]
 })
 export class ForumComponent {
-  forum!: ForumResponse
-  posts!: string[]
+  forum!: ForumData
+  posts!: PostData[]
 
   constructor(
     private route: ActivatedRoute,
@@ -30,7 +34,7 @@ export class ForumComponent {
       return
     }
 
-    const userData: UserResponse = {
+    const userData: UserData = {
       token: token
     }
 
@@ -40,16 +44,8 @@ export class ForumComponent {
           this.router.navigate(['/newforums'])
         }
 
-        this.forum = res
-      },
-      error: (err) => {
-        verifyError(err, this.router)
-      },
-    })
-
-    this.postService.getByForum(userData).subscribe({
-      next: (res) => {
-        console.log(res)
+        this.forum = res.forum
+        this.posts = res.posts
       },
       error: (err) => {
         verifyError(err, this.router)

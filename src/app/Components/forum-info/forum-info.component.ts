@@ -1,7 +1,7 @@
 import { Component, Input } from '@angular/core';
 import { CommonModule } from '@angular/common';
+import { ForumData } from 'src/app/models/forum-data';
 
-import { ForumResponse } from 'src/app/models/response/forum-response';
 
 @Component({
   selector: 'app-forum-info',
@@ -11,7 +11,7 @@ import { ForumResponse } from 'src/app/models/response/forum-response';
   imports: [CommonModule]
 })
 export class ForumInfoComponent {
-  @Input() forum!: ForumResponse
+  @Input() forum!: ForumData
   @Input() isMyForumsPage!: boolean
   
   buttonText = () => this.forum.isMember ? 'You already joined in this forum' : 'Join this forum'

@@ -5,8 +5,8 @@ import { Component } from '@angular/core';
 import { Router } from '@angular/router';
 
 import { UserService } from 'src/app/services/user/user.service';
-import verifyError from 'src/app/services/error/verify-error';
-import { UserData } from 'src/app/models/data/user-data';
+import verifyError from 'src/app/services/verify-error';
+import { LoginUserData } from 'src/app/models/login-user-data';
 
 @Component({
   selector: 'app-sign-in',
@@ -63,12 +63,9 @@ export class SignInComponent {
       return
     }
 
-    const user: UserData = {
+    const user: LoginUserData = {
       login: this.Login,
-      email: '',
-      username: '',
       password: this.Password,
-      birthDate: new Date
     }
 
     this.service.login(user).subscribe({

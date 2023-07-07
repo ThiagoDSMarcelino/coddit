@@ -1,0 +1,9 @@
+<div class="box">
+    <a href="/forum/{{forum.title}}">
+        <h3>{{forum.title}}</h3>
+    </a>
+    <p>{{forum.description}}</p>
+    <button type="button" class="btn btn-primary btn-sm" [disabled]="forum.isMember" *ngIf="!isMyForumsPage">
+        {{buttonText()}}
+    </button>
+</div>

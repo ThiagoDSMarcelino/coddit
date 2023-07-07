@@ -1,4 +1,4 @@
-export interface ForumData {
+export interface CreateForumData {
     token: string
     title: string
     description: string

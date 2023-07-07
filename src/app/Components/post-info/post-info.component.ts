@@ -1,5 +1,7 @@
+import { Component, Input } from '@angular/core';
 import { CommonModule } from '@angular/common';
-import { Component } from '@angular/core';
+
+import { PostData } from 'src/app/models/post-data';
 
 @Component({
   selector: 'app-post-info',
@@ -9,17 +11,24 @@ import { Component } from '@angular/core';
   imports: [CommonModule]
 })
 export class PostInfoComponent {
+  @Input() post!: PostData
+
   isHidden = true
   buttonText = 'more'
 
+  numberOfCharacters = 80
+  
+  mainText = () => {
+    if (!this.isHidden) {
+      return this.post.content.substring(0, this.numberOfCharacters)
+    }
+    
+    return this.post.content.substring(0, this.numberOfCharacters) + (this.hasHiddenText() ? '...' : '')
+  }
 
-  placeholder = 'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed rhoncus sed diam in rhoncus. fringilla sapien porta nulla dignissim, et tristique nisl sollicitudin. Quisque gravida leo augue, quis dignissim libero interdum sit amet. Sed at nisl ac est'
-
-  numberOfCharacters = 100
-
-  hiddenText = () => this.placeholder.substring(this.numberOfCharacters)
-  mainText = () => this.placeholder.substring(0, this.numberOfCharacters) + (this.hasHiddenText() ? '...' : '')
-  hasHiddenText = () => this.placeholder.length > 100
+  hiddenText = () => this.post.content.substring(this.numberOfCharacters)
+  
+  hasHiddenText = () => this.post.content.length > this.numberOfCharacters
 
   ToggleText() {
     this.isHidden = !this.isHidden

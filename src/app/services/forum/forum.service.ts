@@ -1,9 +1,10 @@
 import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
+import { CreateForumData } from 'src/app/models/create-forum-data';
+import { ForumData } from 'src/app/models/forum-data';
+import { ForumPageData } from 'src/app/models/forum-page-data';
+import { UserData } from 'src/app/models/user-data';
 
-import { ForumResponse } from 'src/app/models/response/forum-response';
-import { UserResponse } from 'src/app/models/response/user-response';
-import { ForumData } from 'src/app/models/data/forum-data';
 import { environment } from 'src/environment';
 
 @Injectable({
@@ -13,15 +14,15 @@ export class ForumService {
 
   constructor(private http: HttpClient) { }
 
-  get = (user: UserResponse, title: string) =>
-    this.http.post<ForumResponse>(`${environment.BACKEND_URL}/forum/${title}`, user)
+  get = (user: UserData, title: string) =>
+    this.http.post<ForumPageData>(`${environment.BACKEND_URL}/forum/${title}`, user)
 
-  create = (forum: ForumData) =>
+  create = (forum: CreateForumData) =>
     this.http.post(`${environment.BACKEND_URL}/forum/create`, forum)
 
-  getUserForums = (user: UserResponse) =>
-    this.http.post<ForumResponse[]>(`${environment.BACKEND_URL}/forum/userforums`, user)
+  getUserForums = (user: UserData) =>
+    this.http.post<ForumData[]>(`${environment.BACKEND_URL}/forum/userForums`, user)
 
-  getNewForums = (user: UserResponse) =>
-    this.http.post<ForumResponse[]>(`${environment.BACKEND_URL}/forum/newforums`, user)
+  getNewForums = (user: UserData) =>
+    this.http.post<ForumData[]>(`${environment.BACKEND_URL}/forum/newForums`, user)
 }

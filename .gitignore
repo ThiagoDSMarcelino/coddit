@@ -56,19 +56,4 @@ src/environment.ts
 .history
 .ionide
 
-### Web ###
-*.asp
-*.cer
-*.csr
-*.css
-*.htm
-*.html
-*.js
-*.jsp
-*.php
-*.rss
-*.wasm
-*.wat
-*.xhtml
-
 # End of https://www.toptal.com/developers/gitignore/api/visualstudiocode,angular,web,dotenv

@@ -1,0 +1,66 @@
+<form class="container p-4 g-3" (keydown.enter)="$event.preventDefault()">
+    <div class="row g-3 justify-content-center">
+        <div class="col-7">
+            <label for="email" class="form-label">E-mail</label>
+            <input type="email" class="form-control" id="email" placeholder="example@email.com" [(ngModel)]="Email"
+                [ngModelOptions]="{standalone: true}">
+        </div>
+
+        <div class="col-7">
+            <label for="username" class="form-label">Username</label>
+            <div class="input-group">
+                <span class="input-group-text" id="username-prepend">@</span>
+                <input type="text" class="form-control" id="username" aria-describedby="username-prepend"
+                    placeholder="Example" [(ngModel)]="Username" [ngModelOptions]="{standalone: true}">
+            </div>
+        </div>
+
+        <div class="col-7">
+            <label for="password" class="form-label">Password</label>
+            <input type="password" class="form-control" id="password" placeholder="********" [(ngModel)]="Password"
+                [ngModelOptions]="{standalone: true}">
+        </div>
+
+        <div class="col-7">
+            <label for="repeat-password" class="form-label">Repeat password</label>
+            <input type="password" class="form-control" id="repeat-password" placeholder="********" [(ngModel)]="RepeatedPassword"
+                [ngModelOptions]="{standalone: true}">
+        </div>
+
+        <div class="col-7">
+            <label for="birth-date" class="form-label">Birth date</label>
+            <input type="date" class="form-control" id="birth-date" [(ngModel)]="BirthDate"
+                [ngModelOptions]="{standalone: true}" max="{{Max}}" min="{{Min}}" placeholder="dd-mm-yyyy">
+        </div>
+
+        <div class="col-7">
+            <div class="form-check">
+                <input class="form-check-input" type="checkbox" value="" id="terms-and-conditions" [(ngModel)]="Agreed"
+                    [ngModelOptions]="{standalone: true}">
+                <label class="form-check-label" for="terms-and-conditions">
+                    I agree to terms and conditions
+                </label>
+            </div>
+        </div>
+        
+        <div class="col-7" *ngIf="HasError()">
+            <ul class="errors-box">
+                <li class="error" *ngFor="let error of Errors; let i = index">
+                    {{error}}
+                </li>
+            </ul>
+        </div>
+        
+        <div class="col-7">
+            <button class="btn btn-primary" type="button" (click)="SubmitForm()">
+                Sign Up
+            </button>
+            <span class="text-link">
+                Already have an account?
+                <a href="/signin">
+                    Sign In
+                </a>
+            </span>
+        </div>
+    </div>
+</form>

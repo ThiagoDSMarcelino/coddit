@@ -1,9 +1,10 @@
 import { Router } from "@angular/router";
-import { ErrorResponse } from "src/app/models/response/error-response";
+
+import { ErrorData } from "src/app/models/error-data";
 
 const verifyError = (err: any, router: Router) => {
   if (err.status === 400) {
-    let error = err.error as ErrorResponse
+    let error = err.error as ErrorData
     
     if (error.reason === 'Invalid Token') {
       sessionStorage.removeItem('token')
