@@ -69,7 +69,7 @@ public class StudentController : ControllerBase
             Token = token
         };
 
-        return tokenData;
+        return Created("", tokenData);
     }
 
     [HttpPost("signin")]
@@ -79,9 +79,9 @@ public class StudentController : ControllerBase
         [FromServices] IRepository<User> usersRepo,
         [FromServices] ISecurityService security)
     {
-        var user = await usersRepo.Get(user =>
-            user.Email == userData.Login ||
-            user.Username == userData.Login);
+        var user = await usersRepo.Get(u =>
+            u.Email == userData.Login ||
+            u.Username == userData.Login);
 
         if (user is null)
         {

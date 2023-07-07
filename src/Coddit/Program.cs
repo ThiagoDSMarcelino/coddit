@@ -45,24 +45,25 @@ builder.Services.AddSingleton(
 
 builder.Services.AddTransient<IPasswordProvider>(
     p => new ConstPasswordProvider(
-        p.GetService<EnvironmentFile>()
-            .Get("SECRET_PASSWORD")
+        p.GetService<EnvironmentFile>()!
+            .Get("SECRET_PASSWORD")!
     )
 );
-
-builder.Services.AddTransient<ISecurityService>(
-    p => new SecurityService(
-        p.GetService<Encoding>(),
-        p.GetService<HashAlgorithm>()
-    )
-);
-
 
 builder.Services.AddTransient<IJWTService>(
     p => new JWTService(
         p.GetService<IPasswordProvider>()!,
         p.GetService<Encoding>()!,
         HashAlgorithmType.HS256
+    )
+);
+
+builder.Services.AddTransient<ISecurityService>(
+    p => new SecurityService(
+        p.GetService<HashAlgorithm>()!,
+        p.GetService<Encoding>()!,
+        p.GetService<IJWTService>()!,
+        p.GetService<IRepository<User>>()!
     )
 );
 

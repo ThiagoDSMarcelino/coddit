@@ -1,19 +1,19 @@
 ﻿using System;
 using System.Collections.Generic;
 using Microsoft.EntityFrameworkCore;
+using Securitas;
 
 namespace Coddit.Model;
 
 public partial class CodditContext : DbContext
 {
-    public CodditContext()
-    {
-    }
+    private readonly EnvironmentFile env;
+    public CodditContext(EnvironmentFile env)
+        => this.env = env;
 
-    public CodditContext(DbContextOptions<CodditContext> options)
+    public CodditContext(DbContextOptions<CodditContext> options, EnvironmentFile env)
         : base(options)
-    {
-    }
+        => this.env = env;
 
     public virtual DbSet<Comment> Comments { get; set; }
 
@@ -34,8 +34,7 @@ public partial class CodditContext : DbContext
     public virtual DbSet<Vote> Votes { get; set; }
 
     protected override void OnConfiguring(DbContextOptionsBuilder optionsBuilder)
-#warning To protect potentially sensitive information in your connection string, you should move it out of source code. You can avoid scaffolding the connection string by using the Name= syntax to read it from configuration - see https://go.microsoft.com/fwlink/?linkid=2131148. For more guidance on storing connection strings, see http://go.microsoft.com/fwlink/?LinkId=723263.
-        => optionsBuilder.UseSqlServer("Data Source=CT-C-00187\\SQLEXPRESS;Initial Catalog=Coddit;Integrated Security=True;TrustServerCertificate=true");
+        => optionsBuilder.UseSqlServer($"Data Source={env.Get("DATABASE")};Initial Catalog=Coddit;Integrated Security=True;TrustServerCertificate=true");
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
@@ -49,7 +48,6 @@ public partial class CodditContext : DbContext
                 .HasDefaultValueSql("(getdate())")
                 .HasColumnType("date");
             entity.Property(e => e.Message)
-                .IsRequired()
                 .HasMaxLength(255)
                 .IsUnicode(false);
             entity.Property(e => e.PostId).HasColumnName("PostID");
@@ -80,11 +78,9 @@ public partial class CodditContext : DbContext
                 .HasDefaultValueSql("(getdate())")
                 .HasColumnType("date");
             entity.Property(e => e.Description)
-                .IsRequired()
                 .HasMaxLength(150)
                 .IsUnicode(false);
             entity.Property(e => e.Title)
-                .IsRequired()
                 .HasMaxLength(50)
                 .IsUnicode(false);
         });
@@ -143,7 +139,6 @@ public partial class CodditContext : DbContext
 
             entity.Property(e => e.Id).HasColumnName("ID");
             entity.Property(e => e.Title)
-                .IsRequired()
                 .HasMaxLength(50)
                 .IsUnicode(false);
         });
@@ -154,7 +149,6 @@ public partial class CodditContext : DbContext
 
             entity.Property(e => e.Id).HasColumnName("ID");
             entity.Property(e => e.Content)
-                .IsRequired()
                 .HasMaxLength(255)
                 .IsUnicode(false);
             entity.Property(e => e.CreatedAt)
@@ -162,7 +156,6 @@ public partial class CodditContext : DbContext
                 .HasColumnType("date");
             entity.Property(e => e.ForumId).HasColumnName("ForumID");
             entity.Property(e => e.Title)
-                .IsRequired()
                 .HasMaxLength(50)
                 .IsUnicode(false);
             entity.Property(e => e.UserId).HasColumnName("UserID");
@@ -185,7 +178,6 @@ public partial class CodditContext : DbContext
             entity.Property(e => e.Id).HasColumnName("ID");
             entity.Property(e => e.ForumId).HasColumnName("ForumID");
             entity.Property(e => e.Title)
-                .IsRequired()
                 .HasMaxLength(50)
                 .IsUnicode(false);
 
@@ -209,22 +201,18 @@ public partial class CodditContext : DbContext
                 .HasDefaultValueSql("(getdate())")
                 .HasColumnType("date");
             entity.Property(e => e.Email)
-                .IsRequired()
                 .HasMaxLength(100)
                 .IsUnicode(false);
             entity.Property(e => e.IsActive)
                 .IsRequired()
                 .HasDefaultValueSql("((1))");
             entity.Property(e => e.Password)
-                .IsRequired()
                 .HasMaxLength(100)
                 .IsUnicode(false);
             entity.Property(e => e.Salt)
-                .IsRequired()
                 .HasMaxLength(16)
                 .IsUnicode(false);
             entity.Property(e => e.Username)
-                .IsRequired()
                 .HasMaxLength(50)
                 .IsUnicode(false);
         });

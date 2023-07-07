@@ -1,26 +1,32 @@
-﻿using System.Security.Cryptography;
+﻿using Coddit.DTO;
+using Securitas.JWT;
+using System.Security.Cryptography;
 using System.Text;
 
 namespace Coddit.Services;
 
 public class SecurityService : ISecurityService
 {
-    private readonly HashAlgorithm _algorithm;
-    private readonly Encoding _encoding;
+    private readonly HashAlgorithm algorithm;
+    private readonly Encoding encoding;
+    private readonly IJWTService jwtService;
+    private readonly IRepository<User> userRepo;
 
-    public SecurityService(Encoding encoding, HashAlgorithm algorithm)
+    public SecurityService(HashAlgorithm algorithm, Encoding encoding, IJWTService jwtService, IRepository<User> userRepo)
     {
-        this._encoding = encoding;
-        this._algorithm = algorithm;
+        this.algorithm = algorithm;
+        this.encoding = encoding;
+        this.jwtService = jwtService;
+        this.userRepo = userRepo;
     }
 
     public string HashPassword(string password, string salt)
     {
         var concatPassword = password + salt;
-        var bytesPassword = _encoding.GetBytes(concatPassword);
+        var bytesPassword = encoding.GetBytes(concatPassword);
 
-        var hashedPasswordBytes = _algorithm.ComputeHash(bytesPassword);
-        _algorithm.Dispose();
+        var hashedPasswordBytes = algorithm.ComputeHash(bytesPassword);
+        algorithm.Dispose();
 
         var hashedPassword = Convert.ToBase64String(hashedPasswordBytes);
 
@@ -35,5 +41,25 @@ public class SecurityService : ISecurityService
         var salt = Convert.ToBase64String(randBytes);
 
         return salt;
+    }
+
+    public async Task<SecurityData> ValidateUserAsync(string jwt)
+    {
+        var validation = await jwtService.ValidateTokenAsync<JWTData>(jwt);
+        var result = new SecurityData
+        {
+            User = null,
+            Time = DateTime.Now
+        };
+
+        if (!validation.IsValid || validation.Data is null)
+            return result;
+
+        var user = await userRepo.Get(user => user.Id == validation.Data.UserId);
+
+        result.User = user;
+        result.Time = validation.Data.JWTCreateAt;
+
+        return result;
     }
 }

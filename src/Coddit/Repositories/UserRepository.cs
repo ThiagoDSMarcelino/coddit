@@ -27,7 +27,7 @@ public class UserRepository : IRepository<User>
         await _entity.SaveChangesAsync();
     }
     
-    public async Task<User> Get(Expression<Func<User, bool>> exp)
+    public async Task<User?> Get(Expression<Func<User, bool>> exp)
         => await _entity.Users.FirstOrDefaultAsync(exp);
 
     public async Task<bool> Exist(Expression<Func<User, bool>> exp)

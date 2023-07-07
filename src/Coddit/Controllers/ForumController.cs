@@ -5,6 +5,7 @@ namespace Coddit.Controllers;
 using Repositories;
 using DTO;
 using Model;
+using Services;
 
 [ApiController]
 [Route("forum")]
@@ -15,37 +16,28 @@ public class ForumController : ControllerBase
     public async Task<ActionResult<ForumData>> Get(
         string forumTitle,
         [FromBody] UserData data,
-        [FromServices] IRepository<User> userRepo,
         [FromServices] IForumRepository forumRepo,
-        [FromServices] IJWTService jwt)
+        [FromServices] ISecurityService securityService)
     {
-        var validation = await jwt.ValidateTokenAsync<JWTData>(data.Token);
+        var userValidate = await securityService.ValidateUserAsync(data.Token);
 
-        if (!validation.IsValid)
+        if (userValidate.User is null)
         {
             var error = new ErrorData
             {
                 Messages = Array.Empty<string>(),
-                Reason = "Invalid Token"
+                Reason = "Invalid Token",
             };
 
             return BadRequest(error);
         }
 
-        var user = await userRepo.Get(user => user.Id == validation.Data.UserId);
-
-        if (user is null)
-        {
-            var error = new ErrorData
-            {
-                Messages = Array.Empty<string>(),
-                Reason = "User don't found"
-            };
-
-            return BadRequest(error);
-        }
+        var user = userValidate.User;
 
         var forum = await forumRepo.Get(f => f.Title == forumTitle);
+
+        if (forum is null)
+            return NotFound();
 
         var result = new ForumData()
             {
@@ -63,21 +55,22 @@ public class ForumController : ControllerBase
         [FromServices] IMemberRepository memberRepo,
         [FromServices] IRepository<Role> roleRepo,
         [FromServices] IForumRepository forumRepo,
-        [FromServices] IRepository<User> userRepo,
-        [FromServices] IJWTService jwt)
+        [FromServices] ISecurityService securityService)
     {
-        var validation = await jwt.ValidateTokenAsync<JWTData>(data.Token);
+        var userValidate = await securityService.ValidateUserAsync(data.Token);
 
-        if (!validation.IsValid)
+        if (userValidate.User is null)
         {
             var error = new ErrorData
             {
                 Messages = Array.Empty<string>(),
-                Reason = "Invalid Token"
+                Reason = "Invalid Token",
             };
 
             return BadRequest(error);
         }
+
+        var user = userValidate.User;
 
         var usedTitle = await forumRepo.Exist(forum => forum.Title == data.Title);
 
@@ -102,21 +95,20 @@ public class ForumController : ControllerBase
 
         var forum = await forumRepo.Get(forum => forum.Title == newForum.Title);
         
-        await CreateDefaultRoles(forum.Id, roleRepo);
+        await CreateDefaultRoles(forum!.Id, roleRepo);
 
-        var user = await userRepo.Get(user => user.Id == validation.Data.UserId);
         var adm = await roleRepo.Get(role => role.ForumId == forum.Id && role.IsOwner);
 
         var firstMember = new Member()
         {
             UserId = user.Id,
             ForumId = forum.Id,
-            RoleId = adm.Id
+            RoleId = adm!.Id
         };
 
         await memberRepo.Add(firstMember);
 
-        return Ok();
+        return Created("", new { });
 
         static async Task CreateDefaultRoles(long forumId, IRepository<Role> roleRepo)
         {
@@ -146,33 +138,22 @@ public class ForumController : ControllerBase
         [FromBody] UserData data,
         [FromServices] IRepository<User> userRepo,
         [FromServices] IMemberRepository memberRepo,
-        [FromServices] IJWTService jwt)
+        [FromServices] ISecurityService securityService)
     {
-        var validation = await jwt.ValidateTokenAsync<JWTData>(data.Token);
+        var userValidate = await securityService.ValidateUserAsync(data.Token);
 
-        if (!validation.IsValid)
+        if (userValidate.User is null)
         {
             var error = new ErrorData
             {
                 Messages = Array.Empty<string>(),
-                Reason = "Invalid Token"
+                Reason = "Invalid Token",
             };
 
             return BadRequest(error);
         }
 
-        var user = await userRepo.Get(user => user.Id == validation.Data.UserId);
-
-        if (user is null)
-        {
-            var error = new ErrorData
-            {
-                Messages = Array.Empty<string>(),
-                Reason = "User don't found"
-            };
-
-            return BadRequest(error);
-        }
+        var user = userValidate.User;
 
         var memberFrom = await memberRepo
             .FilterWithForums(member => member.UserId == user.Id);
@@ -194,34 +175,23 @@ public class ForumController : ControllerBase
         [FromBody] UserData data,
         [FromServices] IRepository<User> userRepo,
         [FromServices] IForumRepository forumRepo,
-        [FromServices] IJWTService jwt,
+        [FromServices] ISecurityService securityService,
         string q = "")
     {
-        var validation = await jwt.ValidateTokenAsync<JWTData>(data.Token);
+        var userValidate = await securityService.ValidateUserAsync(data.Token);
 
-        if (!validation.IsValid)
+        if (userValidate.User is null)
         {
             var error = new ErrorData
             {
                 Messages = Array.Empty<string>(),
-                Reason = "Invalid Token"
+                Reason = "Invalid Token",
             };
 
             return BadRequest(error);
         }
 
-        var user = await userRepo.Get(user => user.Id == validation.Data.UserId);
-
-        if (user is null)
-        {
-            var error = new ErrorData
-            {
-                Messages = Array.Empty<string>(),
-                Reason = "User don't found"
-            };
-
-            return BadRequest(error);
-        }
+        var user = userValidate.User;
 
         var allForums = await forumRepo.FilterWithMembers(f => f.Title.Contains(q));
 

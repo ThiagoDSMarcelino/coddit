@@ -27,7 +27,7 @@ public class PostRepository : IRepository<Post>
         await _entity.SaveChangesAsync();
     }
     
-    public async Task<Post> Get(Expression<Func<Post, bool>> exp)
+    public async Task<Post?> Get(Expression<Func<Post, bool>> exp)
         => await _entity.Posts.FirstOrDefaultAsync(exp);
 
     public async Task<bool> Exist(Expression<Func<Post, bool>> exp)

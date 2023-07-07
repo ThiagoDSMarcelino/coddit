@@ -13,9 +13,9 @@ public partial class Member
 
     public long RoleId { get; set; }
 
-    public virtual Forum Forum { get; set; }
+    public virtual Forum Forum { get; set; } = null!;
 
-    public virtual Role Role { get; set; }
+    public virtual Role Role { get; set; } = null!;
 
-    public virtual User User { get; set; }
+    public virtual User User { get; set; } = null!;
 }

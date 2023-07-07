@@ -27,7 +27,7 @@ public class MemberRepository : IMemberRepository
         await _entity.SaveChangesAsync();
     }
 
-    public async Task<Member> Get(Expression<Func<Member, bool>> exp)
+    public async Task<Member?> Get(Expression<Func<Member, bool>> exp)
         => await _entity.Members.FirstOrDefaultAsync(exp);
 
     public async Task<bool> Exist(Expression<Func<Member, bool>> exp)

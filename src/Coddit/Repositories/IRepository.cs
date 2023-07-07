@@ -8,7 +8,7 @@ public interface IRepository<T>
     
     Task Update(T obj);
 
-    Task<T> Get(Expression<Func<T, bool>> exp);
+    Task<T?> Get(Expression<Func<T, bool>> exp);
 
     Task<bool> Exist(Expression<Func<T, bool>> exp);
 

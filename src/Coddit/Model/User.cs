@@ -7,17 +7,17 @@ public partial class User
 {
     public long Id { get; set; }
 
-    public string Email { get; set; }
+    public string Email { get; set; } = null!;
 
-    public string Username { get; set; }
+    public string Username { get; set; } = null!;
 
-    public string Password { get; set; }
+    public string Password { get; set; } = null!;
 
-    public string Salt { get; set; }
+    public string Salt { get; set; } = null!;
 
     public DateTime BirthDate { get; set; }
 
-    public byte[] Picture { get; set; }
+    public byte[]? Picture { get; set; }
 
     public bool? IsActive { get; set; }
 

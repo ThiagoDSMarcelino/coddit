@@ -28,7 +28,7 @@ public class ForumRepository : IForumRepository
         await _entity.SaveChangesAsync();
     }
     
-    public async Task<Forum> Get(Expression<Func<Forum, bool>> exp)
+    public async Task<Forum?> Get(Expression<Func<Forum, bool>> exp)
         => await _entity.Forums.FirstOrDefaultAsync(exp);
 
     public async Task<bool> Exist(Expression<Func<Forum, bool>> exp)
@@ -39,4 +39,7 @@ public class ForumRepository : IForumRepository
 
     public async Task<List<Forum>> FilterWithMembers(Expression<Func<Forum, bool>> exp)
         => await _entity.Forums.Where(exp).Include(f => f.Members).ToListAsync();
+
+    public async Task<List<Forum>> FilterWithPost(Expression<Func<Forum, bool>> exp)
+        => await _entity.Forums.Where(exp).Include(f => f.Posts).ToListAsync();
 }

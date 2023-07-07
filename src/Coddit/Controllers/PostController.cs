@@ -21,7 +21,7 @@ public class PostController : ControllerBase
     {
         var validation = await jwt.ValidateTokenAsync<JWTData>(data.Token);
 
-        if (!validation.IsValid)
+        if (!validation.IsValid || validation.Data is null)
         {
             var error = new ErrorData
             {
@@ -32,7 +32,7 @@ public class PostController : ControllerBase
             return BadRequest(error);
         }
 
-        var user = await userRepo.Get(user => user.Id == validation.Data.UserId);
+        var user = await userRepo.Get(user => user.Id == validation.Data!.UserId);
 
         if (user is null)
         {
@@ -49,11 +49,10 @@ public class PostController : ControllerBase
         var memberFrom = await memberRepo
             .FilterWithForums(member => member.UserId == user.Id);
 
-        var forums = await forumRepo.Filter(f => true);
+        var forums = await forumRepo.FilterWithPost(f => memberFrom.Any(m => m.Forum.Id == f.Id) && f.Title.Contains(q));
 
-        var posts = memberFrom
-            .Where(member => member.Forum.Title.Contains(q))
-            .SelectMany(member => member.Forum.Posts)
+        var posts = forums
+            .SelectMany(f => f.Posts)
             .Select(post => new PostData()
                 {
                     Title = post.Title,
@@ -63,8 +62,7 @@ public class PostController : ControllerBase
                 })
             .ToList();
 
-        Console.WriteLine(memberFrom.Count);
-        Console.WriteLine(forums.Count);
+        Console.WriteLine(forums[0].Title);
         Console.WriteLine(posts.Count);
 
         return posts;

@@ -27,7 +27,7 @@ public class RoleRepository : IRepository<Role>
         await _entity.SaveChangesAsync();
     }
 
-    public async Task<Role> Get(Expression<Func<Role, bool>> exp)
+    public async Task<Role?> Get(Expression<Func<Role, bool>> exp)
         => await _entity.Roles.FirstOrDefaultAsync(exp);
 
     public async Task<bool> Exist(Expression<Func<Role, bool>> exp)
