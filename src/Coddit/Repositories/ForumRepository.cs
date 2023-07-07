@@ -1,8 +1,9 @@
 namespace Coddit.Repositories;
 
 using Model;
+using System.Linq;
 
-public class ForumRepository : IRepository<Forum>
+public class ForumRepository : IForumRepository
 {
     private readonly CodditContext _entity;
     
@@ -35,4 +36,7 @@ public class ForumRepository : IRepository<Forum>
 
     public async Task<List<Forum>> Filter(Expression<Func<Forum, bool>> exp)
         => await _entity.Forums.Where(exp).ToListAsync();
+
+    public async Task<List<Forum>> FilterWithMembers(Expression<Func<Forum, bool>> exp)
+        => await _entity.Forums.Where(exp).Include(f => f.Members).ToListAsync();
 }

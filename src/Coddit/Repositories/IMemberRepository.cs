@@ -1,4 +1,4 @@
-namespace Coddit.Repositories.MemberReposiory;
+namespace Coddit.Repositories;
 
 public interface IMemberRepository : IRepository<Member>
 {

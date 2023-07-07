@@ -1,4 +1,3 @@
-using Coddit.Repositories.MemberReposiory;
 using Coddit.Services;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.Extensions.DependencyInjection;
@@ -74,7 +73,7 @@ builder.Services.AddTransient<IJWTService>(
 builder.Services.AddScoped<CodditContext>();
 builder.Services.AddTransient<IRepository<User>, UserRepository>();
 builder.Services.AddTransient<IRepository<Role>, RoleRepository>();
-builder.Services.AddTransient<IRepository<Forum>, ForumRepository>();
+builder.Services.AddTransient<IForumRepository, ForumRepository>();
 builder.Services.AddTransient<IMemberRepository, MemberRepository>();
 
 #endregion

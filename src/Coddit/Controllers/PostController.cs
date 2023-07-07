@@ -2,8 +2,8 @@
 
 namespace Coddit.Controllers;
 
+using Repositories;
 using DTO;
-using Repositories.MemberReposiory;
 
 [ApiController]
 [Route("post")]
@@ -14,7 +14,7 @@ public class PostController : ControllerBase
     public async Task<ActionResult<List<PostData>>> GetPostByUser(
         [FromBody] UserData data,
         [FromServices] IRepository<User> userRepo,
-        [FromServices] IRepository<Forum> forumRepo,
+        [FromServices] IForumRepository forumRepo,
         [FromServices] IMemberRepository memberRepo,
         [FromServices] IJWTService jwt,
         string q = "")

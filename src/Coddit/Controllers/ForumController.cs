@@ -2,21 +2,67 @@
 
 namespace Coddit.Controllers;
 
+using Repositories;
 using DTO;
 using Model;
-using Repositories.MemberReposiory;
 
 [ApiController]
 [Route("forum")]
 [EnableCors("MainPolicy")]
 public class ForumController : ControllerBase
 {
+    [HttpPost("{forumTitle}")]
+    public async Task<ActionResult<ForumData>> Get(
+        string forumTitle,
+        [FromBody] UserData data,
+        [FromServices] IRepository<User> userRepo,
+        [FromServices] IForumRepository forumRepo,
+        [FromServices] IJWTService jwt)
+    {
+        var validation = await jwt.ValidateTokenAsync<JWTData>(data.Token);
+
+        if (!validation.IsValid)
+        {
+            var error = new ErrorData
+            {
+                Messages = Array.Empty<string>(),
+                Reason = "Invalid Token"
+            };
+
+            return BadRequest(error);
+        }
+
+        var user = await userRepo.Get(user => user.Id == validation.Data.UserId);
+
+        if (user is null)
+        {
+            var error = new ErrorData
+            {
+                Messages = Array.Empty<string>(),
+                Reason = "User don't found"
+            };
+
+            return BadRequest(error);
+        }
+
+        var forum = await forumRepo.Get(f => f.Title == forumTitle);
+
+        var result = new ForumData()
+            {
+                Title = forum.Title,
+                Description = forum.Description,
+                IsMember = forum.Members.Any(member => member.UserId == user.Id)
+            };
+
+        return result;
+    }
+
     [HttpPost("create")]
     public async Task<IActionResult> Create(
         [FromBody] CreateForum data,
         [FromServices] IMemberRepository memberRepo,
         [FromServices] IRepository<Role> roleRepo,
-        [FromServices] IRepository<Forum> forumRepo,
+        [FromServices] IForumRepository forumRepo,
         [FromServices] IRepository<User> userRepo,
         [FromServices] IJWTService jwt)
     {
@@ -147,8 +193,9 @@ public class ForumController : ControllerBase
     public async Task<ActionResult<List<ForumData>>> GetNew(
         [FromBody] UserData data,
         [FromServices] IRepository<User> userRepo,
-        [FromServices] IRepository<Forum> forumRepo,
-        [FromServices] IJWTService jwt)
+        [FromServices] IForumRepository forumRepo,
+        [FromServices] IJWTService jwt,
+        string q = "")
     {
         var validation = await jwt.ValidateTokenAsync<JWTData>(data.Token);
 
@@ -176,7 +223,7 @@ public class ForumController : ControllerBase
             return BadRequest(error);
         }
 
-        var allForums = await forumRepo.Filter(f => true);
+        var allForums = await forumRepo.FilterWithMembers(f => f.Title.Contains(q));
 
         var forums = allForums
             .Select(forum => new ForumData()
