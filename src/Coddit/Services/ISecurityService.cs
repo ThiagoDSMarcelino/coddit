@@ -1,6 +1,4 @@
-﻿using Coddit.DTO;
-
-namespace Coddit.Services;
+﻿namespace Coddit.Services;
 
 public interface ISecurityService
 {

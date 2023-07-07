@@ -1,10 +1,5 @@
 ﻿namespace Coddit.Controllers;
 
-using DTO;
-using Model;
-using Repositories;
-using Services;
-
 [ApiController]
 [Route("forum")]
 [EnableCors("MainPolicy")]

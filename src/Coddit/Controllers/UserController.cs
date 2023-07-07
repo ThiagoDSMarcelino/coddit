@@ -2,14 +2,10 @@ using Securitas.JWT;
 
 namespace Coddit.Controllers;
 
-using DTO;
-using Model;
-using Services;
-
 [ApiController]
 [Route("user")]
 [EnableCors("MainPolicy")]
-public class StudentController : ControllerBase
+public class UserController : ControllerBase
 {
     [HttpPost("create")]
     public async Task<ActionResult<UserData>> Create(

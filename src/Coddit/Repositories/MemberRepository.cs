@@ -1,7 +1,5 @@
 ﻿namespace Coddit.Repositories;
 
-using Model;
-
 public class MemberRepository : IMemberRepository
 {
     private readonly CodditContext _entity;

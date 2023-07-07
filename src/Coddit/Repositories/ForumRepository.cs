@@ -1,8 +1,5 @@
 namespace Coddit.Repositories;
 
-using Model;
-using System.Linq;
-
 public class ForumRepository : IForumRepository
 {
     private readonly CodditContext _entity;

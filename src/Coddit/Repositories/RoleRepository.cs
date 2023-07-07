@@ -1,7 +1,5 @@
 ﻿namespace Coddit.Repositories;
 
-using Model;
-
 public class RoleRepository : IRepository<Role>
 {
     private readonly CodditContext _entity;

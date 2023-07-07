@@ -1,7 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-
-namespace Coddit.Model;
+﻿namespace Coddit.Model;
 
 public partial class User
 {

@@ -1,7 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using Microsoft.EntityFrameworkCore;
-using Securitas;
+﻿using Securitas;
 
 namespace Coddit.Model;
 
