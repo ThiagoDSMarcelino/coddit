@@ -13,6 +13,9 @@ export class ForumService {
 
   constructor(private http: HttpClient) { }
 
+  get = (user: UserResponse, title: string) =>
+    this.http.post<ForumResponse>(`${environment.BACKEND_URL}/forum/${title}`, user)
+
   create = (forum: ForumData) =>
     this.http.post(`${environment.BACKEND_URL}/forum/create`, forum)
 

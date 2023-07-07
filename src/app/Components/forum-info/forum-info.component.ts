@@ -11,8 +11,8 @@ import { ForumResponse } from 'src/app/models/response/forum-response';
   imports: [CommonModule]
 })
 export class ForumInfoComponent {
-  @Input() community!: ForumResponse
+  @Input() forum!: ForumResponse
   @Input() isMyForumsPage!: boolean
   
-  buttonText = () => this.community.isMember ? 'You already joined in this forum' : 'Join this forum'
+  buttonText = () => this.forum.isMember ? 'You already joined in this forum' : 'Join this forum'
 }
