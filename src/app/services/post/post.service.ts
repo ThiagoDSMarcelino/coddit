@@ -1,7 +1,6 @@
 import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 
-import { CreateVoteData } from 'src/app/models/create-vote-data';
 import { CreatePostData } from 'src/app/models/create-post';
 import { UserData } from 'src/app/models/user-data';
 import { PostData } from 'src/app/models/post-data';
@@ -19,7 +18,4 @@ export class PostService {
 
   getByUser = (data: UserData, query: string) =>
     this.http.post<PostData[]>(`${environment.BACKEND_URL}/post?q=${query}`, data)
-
-  vote = (data: CreateVoteData) =>
-    this.http.post(`${environment.BACKEND_URL}/post/vote`, data)
 } 

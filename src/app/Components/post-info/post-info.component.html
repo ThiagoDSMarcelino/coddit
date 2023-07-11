@@ -9,11 +9,11 @@
     </p>
 
     <div class="vote-box">
-        <button (click)="vote('upvote')" [disabled]="disabledButton">
+        <button (click)="vote(true)" [disabled]="disabledButton">
             <i class="fa-{{hasUpVote()}} fa-thumbs-up" style="color: green;"></i>
         </button>
 
-        <button (click)="vote('downvote')" [disabled]="disabledButton">
+        <button (click)="vote(false)" [disabled]="disabledButton">
             <i class="fa-{{hasDownVote()}} fa-thumbs-up fa-flip-vertical" style="color: red;"></i>
         </button>
     </div>

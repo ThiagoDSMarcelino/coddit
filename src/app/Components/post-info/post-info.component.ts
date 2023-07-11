@@ -4,8 +4,8 @@ import { Router } from '@angular/router';
 import dateFormat from 'dateformat';
 
 
-import { PostService } from 'src/app/services/post/post.service';
-import { CreateVoteData } from 'src/app/models/create-vote-data';
+import { VoteService } from 'src/app/services/vote/vote.service';
+import { VoteData } from 'src/app/models/vote-data';
 import verifyError from 'src/app/services/verify-error';
 import { PostData } from 'src/app/models/post-data';
 
@@ -26,7 +26,7 @@ export class PostInfoComponent {
   numberOfCharacters = 80
 
   constructor(
-    private service: PostService,
+    private service: VoteService,
     private router: Router) { }
 
   mainText = () => {
@@ -47,9 +47,7 @@ export class PostInfoComponent {
     this.isHidden = !this.isHidden
     this.buttonText = this.isHidden ? 'more' : 'less'
   }
-  
 
-  
   getTime = () =>
     dateFormat(this.post.createAt, 'hh:MM TT - dd/mm/yyyy')
   
@@ -59,7 +57,7 @@ export class PostInfoComponent {
   hasDownVote = () =>
     !this.post.vote && this.post.vote !== null ? "solid" : "regular"
 
-  vote = (value: any) => {
+  vote = (value: boolean) => {
     this.disabledButton = true
     
     const token = sessionStorage.getItem('token')
@@ -69,20 +67,44 @@ export class PostInfoComponent {
       return
     }
 
-    // const data: CreateVoteData = {
-    //   token: token,
-    //   vote: value == 'upvote',
-    //   id: this.post.id
-    // }
+    const data: VoteData = {
+      token: token,
+      vote: value,
+      postId: this.post.id
+    }
 
-    // this.service.vote(data).subscribe({
-    //   next: (value) => {
-    //     console.log(value)
-    //   },
-    //   error: (err) => {
-    //     verifyError(err, this.router)
-    //   },
-    // })
+    console.log(false === null)
+
+    if (this.post.vote === null) {
+      this.service.create(data).subscribe({
+        next: () => {
+          this.post.vote = value
+        },
+        error: (err) => {
+          verifyError(err, this.router)
+        },
+      })
+    } else if (this.post.vote === value) {
+      this.service.delete(data).subscribe({
+        next: () => {
+          this.post.vote = null
+        },
+        error: (err) => {
+          verifyError(err, this.router)
+        },
+      })
+    } else {
+      this.service.update(data).subscribe({
+        next: () => {
+          this.post.vote = value
+        },
+        error: (err) => {
+          verifyError(err, this.router)
+        },
+      })
+    }
+    
+    
 
     this.disabledButton = false
   }
