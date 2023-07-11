@@ -6,6 +6,7 @@ import { Router } from '@angular/router';
 import { PostService } from 'src/app/services/post/post.service';
 import verifyError from 'src/app/services/verify-error';
 import { CreatePostData } from 'src/app/models/create-post';
+import { PostData } from 'src/app/models/post-data';
 
 @Component({
   selector: 'app-create-post',
@@ -16,31 +17,33 @@ import { CreatePostData } from 'src/app/models/create-post';
 })
 export class CreatePostComponent {
   @Input() forumTitle!: string
+  @Input() posts!: PostData[]
   title = ''
   content = ''
-  Errors: string[] = []
-  
+  errors: string[] = []
+
   constructor(
     private router: Router,
-    private service: PostService) { }
+    private service: PostService
+  ) { }
 
-  
-  hasError = () => this.Errors.length > 0
+
+  hasError = () => this.errors.length > 0
 
   addError = (message: string) => {
-    if (!this.Errors.includes(message)) {
-      this.Errors.push(message)
+    if (!this.errors.includes(message)) {
+      this.errors.push(message)
     }
   }
 
-  closeModal = () => 
+  closeModal = () =>
     document.getElementById('close-modal')?.click()
 
   submitForm = () => {
-    this.Errors = []
-    
+    this.errors = []
+
     var token = sessionStorage.getItem('token')
-    
+
     if (token === null) {
       this.router.navigate(['/signin'])
       this.closeModal()
@@ -54,28 +57,29 @@ export class CreatePostComponent {
     if (this.content === '') {
       this.addError('Post content cannot be null')
     }
-    
-    if (this.Errors.length > 0) {
+
+    if (this.errors.length > 0) {
       return
     }
 
-    const createPostData: CreatePostData  = {
+    const createPostData: CreatePostData = {
       token: token,
-      forumTile: this.forumTitle,
+      forumTitle: this.forumTitle,
       title: this.title,
       content: this.content
     }
 
     this.service.create(createPostData).subscribe({
-      next: () => {
+      next: (res) => {
+        this.posts.unshift(res)
         this.closeModal()
       },
       error: (err) => {
         verifyError(err, this.router)
       }
     });
-    
-    // this.title = ''
-    // this.content = ''  
+
+    this.title = ''
+    this.content = ''  
   }
 }

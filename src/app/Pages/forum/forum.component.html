@@ -7,7 +7,7 @@
 
         <div class="col-6 my-4" style="text-align: center;">
             <h2 *ngIf="!hasPosts()">
-                Looks like aren't any post created yet
+                Looks like aren't any post yet
             </h2>
             
             <h2 *ngIf="hasPosts()">
@@ -16,7 +16,7 @@
         </div>
         
         <div class="col-2" *ngIf="forum">
-            <app-create-post [forumTitle]="forum.title" />
+            <app-create-post [forumTitle]="forum.title" [posts]="posts" />
         </div>
         
         <div class="col-8" *ngFor="let post of posts">

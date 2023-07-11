@@ -1,6 +1,7 @@
 export interface PostData {
+    id: number,
     title: string,
     content: string,
     createAt: Date,
-    forumName: string
+    vote: boolean | null
 }

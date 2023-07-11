@@ -1,12 +1,26 @@
 <div class="box">
     <h5>{{post.title}}</h5>
-    
+
     <p style="word-wrap: break-word;">
         {{mainText()}}
         <span [hidden]="isHidden">
             {{hiddenText()}}
         </span>
     </p>
+
+    <div class="vote-box">
+        <button (click)="vote('upvote')" [disabled]="disabledButton">
+            <i class="fa-regular fa-thumbs-up"></i>
+        </button>
+
+        <button (click)="vote('downvote')" [disabled]="disabledButton">
+            <i class="fa-regular fa-thumbs-up fa-flip-vertical"></i>
+        </button>
+    </div>
+
+    <span class="timeSpanText">
+        {{getTime()}}
+    </span>
 
     <button class="btn btn-secondary btn-sm custom-btn" (click)="ToggleText()" *ngIf="hasHiddenText()">
         Show {{buttonText}}

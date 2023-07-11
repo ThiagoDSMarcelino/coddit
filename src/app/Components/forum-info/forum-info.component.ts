@@ -13,6 +13,6 @@ import { ForumData } from 'src/app/models/forum-data';
 export class ForumInfoComponent {
   @Input() forum!: ForumData
   @Input() isMyForumsPage!: boolean
-  
+
   buttonText = () => this.forum.isMember ? 'You already joined in this forum' : 'Join this forum'
 }

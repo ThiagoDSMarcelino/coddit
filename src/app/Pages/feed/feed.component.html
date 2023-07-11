@@ -1,7 +1,17 @@
 <div class="container">
     <div class="row gy-4 justify-content-center">
-        <div class="col-8" *ngFor="let post of Posts; let i = index">
-            <app-post-info />
+        <div class="col-6 my-4" style="text-align: center;">
+            <h2 *ngIf="!hasPosts()">
+                Looks like aren't any post yet
+            </h2>
+            
+            <h2 *ngIf="hasPosts()">
+                Latest posts from your forums
+            </h2>
+        </div>
+
+        <div class="col-8" *ngFor="let post of posts">
+            <app-post-info [post]="post" />
         </div>
     </div>
 </div>

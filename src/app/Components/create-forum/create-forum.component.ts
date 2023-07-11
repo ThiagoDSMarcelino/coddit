@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import { Component, Input } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { Router } from '@angular/router';
@@ -6,6 +6,7 @@ import { Router } from '@angular/router';
 import { ForumService } from 'src/app/services/forum/forum.service';
 import { CreateForumData } from 'src/app/models/create-forum-data';
 import verifyError from 'src/app/services/verify-error';
+import { ForumData } from 'src/app/models/forum-data';
 
 @Component({
   selector: 'app-create-forum',
@@ -15,65 +16,68 @@ import verifyError from 'src/app/services/verify-error';
   imports: [FormsModule, CommonModule]
 })
 export class CreateForumComponent {
-  
+
   constructor(
     private router: Router,
-    private service: ForumService) { }
+    private service: ForumService
+  ) { }
 
-  Title = ''
-  Description = ''
-  Errors: string[] = []
-  
-  HasError = () => this.Errors.length > 0
+  title = ''
+  description = ''
+  errors: string[] = []
+  @Input() forums!: ForumData[]
+
+  HasError = () => this.errors.length > 0
 
   AddError = (message: string) => {
-    if (!this.Errors.includes(message)) {
-      this.Errors.push(message)
+    if (!this.errors.includes(message)) {
+      this.errors.push(message)
     }
   }
 
-  CloseModal = () => 
+  CloseModal = () =>
     document.getElementById('close-modal')?.click()
 
   SubmitForm = () => {
-    this.Errors = []
-    
-    var token = sessionStorage.getItem('token')
-    
+    this.errors = []
+
+    const token = sessionStorage.getItem('token')
+
     if (token === null) {
       this.router.navigate(['/signin'])
       this.CloseModal()
       return
     }
 
-    if (this.Title === '') {
+    if (this.title === '') {
       this.AddError('Forum title cannot be null')
     }
 
-    if (this.Description === '') {
+    if (this.description === '') {
       this.AddError('Forum description cannot be null')
     }
-    
-    if (this.Errors.length > 0) {
+
+    if (this.errors.length > 0) {
       return
     }
 
-    const forum: CreateForumData  = {
+    const forum: CreateForumData = {
       token: token,
-      title: this.Title,
-      description: this.Description
+      title: this.title,
+      description: this.description
     }
 
     this.service.create(forum).subscribe({
-      next: () => {
+      next: (res) => {
+        this.forums.push(res)
         this.CloseModal()
       },
       error: (err) => {
-        this.Errors = [...this.Errors, ...verifyError(err, this.router)]
+        this.errors = [...this.errors, ...verifyError(err, this.router)]
       }
     });
-    
-    this.Title = ''
-    this.Description = ''  
+
+    this.title = ''
+    this.description = ''
   }
 }

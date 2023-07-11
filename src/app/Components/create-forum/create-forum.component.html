@@ -17,7 +17,7 @@
                         <div class="col-7">
                             <label for="title" class="form-label">Title</label>
                             <input type="text" class="form-control" id="title" placeholder="Java Haters"
-                                [(ngModel)]="Title" [ngModelOptions]="{standalone: true}">
+                                [(ngModel)]="title" [ngModelOptions]="{standalone: true}">
                             <div class="form-text">
                                 Give to your forum a cool name!
                             </div>
@@ -27,7 +27,7 @@
                             <label for="description" class="form-label">Description</label>
                             <textarea class="form-control" id="description" rows="2"
                                 placeholder="Join a community that tackles the infinite downsides that java has."
-                                [(ngModel)]="Description" [ngModelOptions]="{standalone: true}">
+                                [(ngModel)]="description" [ngModelOptions]="{standalone: true}">
                             </textarea>
                             <div class="form-text">
                                 Describe why people should join your forum
@@ -36,7 +36,7 @@
 
                         <div class="col-7" *ngIf="HasError()">
                             <ul class="errors-box">
-                                <li class="error" *ngFor="let error of Errors; let i = index">
+                                <li class="error" *ngFor="let error of errors">
                                     {{error}}
                                 </li>
                             </ul>

@@ -1,6 +1,6 @@
 export interface CreatePostData {
     token: string,
-    forumTile: string,
+    forumTitle: string,
     title: string,
     content: string,
 }

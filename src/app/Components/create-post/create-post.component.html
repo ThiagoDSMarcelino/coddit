@@ -11,6 +11,7 @@
                 <button type="button" class="btn-close" id="close-modal" data-bs-dismiss="modal"
                     aria-label="Close"></button>
             </div>
+            
             <div class="modal-body">
                 <div class="container p-4 g-3">
                     <div class="row g-3 justify-content-center">
@@ -38,7 +39,7 @@
 
                         <div class="col-7" *ngIf="hasError()">
                             <ul class="errors-box">
-                                <li class="error" *ngFor="let error of Errors; let i = index">
+                                <li class="error" *ngFor="let error of errors">
                                     {{error}}
                                 </li>
                             </ul>
