@@ -47,11 +47,17 @@ export class PostInfoComponent {
     this.isHidden = !this.isHidden
     this.buttonText = this.isHidden ? 'more' : 'less'
   }
+  
 
+  
   getTime = () =>
     dateFormat(this.post.createAt, 'hh:MM TT - dd/mm/yyyy')
   
-  hasUpvote = () => this.post.vote
+  hasUpVote = () =>
+    this.post.vote ? "solid" : "regular"
+
+  hasDownVote = () =>
+    !this.post.vote && this.post.vote !== null ? "solid" : "regular"
 
   vote = (value: any) => {
     this.disabledButton = true
@@ -63,11 +69,11 @@ export class PostInfoComponent {
       return
     }
 
-    const data: CreateVoteData = {
-      token: token,
-      vote: value == 'upvote',
-      id: this.post.id
-    }
+    // const data: CreateVoteData = {
+    //   token: token,
+    //   vote: value == 'upvote',
+    //   id: this.post.id
+    // }
 
     // this.service.vote(data).subscribe({
     //   next: (value) => {
