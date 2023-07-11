@@ -1,7 +1,4 @@
-﻿using Coddit.Model;
-using Microsoft.Extensions.Hosting;
-
-namespace Coddit.Controllers;
+﻿namespace Coddit.Controllers;
 
 [ApiController]
 [Route("post")]
@@ -97,43 +94,6 @@ public class PostController : ControllerBase
         result = result
             .OrderByDescending(post => post.CreateAt)
             .ToList();
-
-        return result;
-    }
-
-    [HttpPost("vote")]
-    public async Task<ActionResult<PostData>> Vote(
-        [FromBody] CreateVoteData data,
-        [FromServices] IRepository<Post> postRepo,
-        [FromServices] IRepository<Vote> voteRepo,
-        [FromServices] ISecurityService securityService)
-    {
-        var userValidate = await securityService.ValidateUserAsync(data.Token);
-
-        if (userValidate.User is null)
-            return Unauthorized();
-
-        var user = userValidate.User;
-
-        var newVote = new Vote()
-        {
-            UserId = user.Id,
-            PostId = data.Id,
-            Value = data.Vote
-        };
-
-        await voteRepo.Add(newVote);
-
-        var post = await postRepo.Get(post => post.Id == data.Id);
-
-        var result = new PostData()
-        {
-            Id = post!.Id,
-            Title = post.Title,
-            Content = post.Content,
-            CreateAt = post.CreatedAt,
-            Vote = data.Vote
-        };
 
         return result;
     }

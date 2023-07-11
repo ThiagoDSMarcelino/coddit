@@ -1,8 +1,8 @@
 ﻿namespace Coddit.DTO;
 
-public class CreateVoteData
+public class VoteData
 {
     public string Token { get; set; }
     public bool Vote { get; set; }
-    public long Id { get; set; }
+    public long PostId { get; set; }
 }
