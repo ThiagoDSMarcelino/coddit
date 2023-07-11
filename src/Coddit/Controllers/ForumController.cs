@@ -6,7 +6,7 @@
 public class ForumController : ControllerBase
 {
     [HttpPost("create")]
-    public async Task<IActionResult> Create(
+    public async Task<ActionResult<ForumData>> Create(
         [FromBody] CreateForum data,
         [FromServices] IMemberRepository memberRepo,
         [FromServices] IRepository<Role> roleRepo,
@@ -16,30 +16,14 @@ public class ForumController : ControllerBase
         var userValidate = await securityService.ValidateUserAsync(data.Token);
 
         if (userValidate.User is null)
-        {
-            var error = new ErrorData
-            {
-                Messages = Array.Empty<string>(),
-                Reason = "Invalid Token",
-            };
-
-            return BadRequest(error);
-        }
+            return Unauthorized();
 
         var user = userValidate.User;
 
         var usedTitle = await forumRepo.Exist(forum => forum.Title == data.Title);
 
         if (usedTitle)
-        {
-            var error = new ErrorData
-            {
-                Messages = new string[] { "This title for a forum is already take" },
-                Reason = "A forum with this title already exist"
-            };
-
-            return BadRequest(error);
-        }
+            return BadRequest(new string[] { "This title for a forum is already take" });
 
         var newForum = new Forum()
         {
@@ -64,7 +48,15 @@ public class ForumController : ControllerBase
 
         await memberRepo.Add(firstMember);
 
-        return Created("", new { });
+        var result = new ForumData()
+        {
+            Title = forum.Title,
+            Description = forum.Description,
+            IsMember = true
+        };
+
+
+        return Created("", result);
 
         static async Task CreateDefaultRoles(long forumId, IRepository<Role> roleRepo)
         {
@@ -99,15 +91,7 @@ public class ForumController : ControllerBase
         var userValidate = await securityService.ValidateUserAsync(data.Token);
 
         if (userValidate.User is null)
-        {
-            var error = new ErrorData
-            {
-                Messages = Array.Empty<string>(),
-                Reason = "Invalid Token",
-            };
-
-            return BadRequest(error);
-        }
+            return Unauthorized();
 
         var user = userValidate.User;
 
@@ -128,11 +112,12 @@ public class ForumController : ControllerBase
             Posts = forum.Posts
                 .Select(post => new PostData()
                 {
+                    Id = post.Id,
                     Title = post.Title,
                     Content = post.Content,
-                    CreateAt = post.CreatedAt,
-                    ForumName = forum.Title
+                    CreateAt = post.CreatedAt
                 })
+                .OrderByDescending(post => post.CreateAt)
                 .ToList()
         };
 
@@ -148,15 +133,7 @@ public class ForumController : ControllerBase
         var userValidate = await securityService.ValidateUserAsync(data.Token);
 
         if (userValidate.User is null)
-        {
-            var error = new ErrorData
-            {
-                Messages = Array.Empty<string>(),
-                Reason = "Invalid Token",
-            };
-
-            return BadRequest(error);
-        }
+            return Unauthorized();
 
         var user = userValidate.User;
 
@@ -168,7 +145,7 @@ public class ForumController : ControllerBase
             {
                 Title = member.Forum.Title,
                 Description = member.Forum.Description,
-                IsMember = member.UserId == user.Id
+                IsMember = true
             })
             .ToList();
 
@@ -185,15 +162,7 @@ public class ForumController : ControllerBase
         var userValidate = await securityService.ValidateUserAsync(data.Token);
 
         if (userValidate.User is null)
-        {
-            var error = new ErrorData
-            {
-                Messages = Array.Empty<string>(),
-                Reason = "Invalid Token",
-            };
-
-            return BadRequest(error);
-        }
+            return Unauthorized();
 
         var user = userValidate.User;
 

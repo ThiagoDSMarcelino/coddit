@@ -54,10 +54,15 @@ public class SecurityService : ISecurityService
         if (!validation.IsValid || validation.Data is null)
             return result;
 
+        var date = DateTime.Parse(validation.Data.CreateAt);
+
+        if (date.AddDays(-1) > DateTime.Now)
+            return result;
+
         var user = await userRepo.Get(user => user.Id == validation.Data.UserId);
 
         result.User = user;
-        result.Time = validation.Data.JWTCreateAt;
+        result.Time = date;
 
         return result;
     }

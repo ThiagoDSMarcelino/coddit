@@ -37,13 +37,13 @@ public partial class CodditContext : DbContext
     {
         modelBuilder.Entity<Comment>(entity =>
         {
-            entity.HasKey(e => e.Id).HasName("PK__Comments__3214EC27B716B427");
+            entity.HasKey(e => e.Id).HasName("PK__Comments__3214EC27EE904251");
 
             entity.Property(e => e.Id).HasColumnName("ID");
             entity.Property(e => e.CommentId).HasColumnName("CommentID");
             entity.Property(e => e.CreatedAt)
                 .HasDefaultValueSql("(getdate())")
-                .HasColumnType("date");
+                .HasColumnType("datetime");
             entity.Property(e => e.Message)
                 .HasMaxLength(255)
                 .IsUnicode(false);
@@ -66,14 +66,14 @@ public partial class CodditContext : DbContext
 
         modelBuilder.Entity<Forum>(entity =>
         {
-            entity.HasKey(e => e.Id).HasName("PK__Forums__3214EC2763670485");
+            entity.HasKey(e => e.Id).HasName("PK__Forums__3214EC27E05419A4");
 
-            entity.HasIndex(e => e.Title, "UQ__Forums__2CB664DC24F72358").IsUnique();
+            entity.HasIndex(e => e.Title, "UQ__Forums__2CB664DC60C9F897").IsUnique();
 
             entity.Property(e => e.Id).HasColumnName("ID");
             entity.Property(e => e.CreatedAt)
                 .HasDefaultValueSql("(getdate())")
-                .HasColumnType("date");
+                .HasColumnType("datetime");
             entity.Property(e => e.Description)
                 .HasMaxLength(150)
                 .IsUnicode(false);
@@ -84,7 +84,7 @@ public partial class CodditContext : DbContext
 
         modelBuilder.Entity<HasPermission>(entity =>
         {
-            entity.HasKey(e => e.Id).HasName("PK__HasPermi__3214EC27A74BE892");
+            entity.HasKey(e => e.Id).HasName("PK__HasPermi__3214EC27E9FEFF6F");
 
             entity.ToTable("HasPermission");
 
@@ -105,7 +105,7 @@ public partial class CodditContext : DbContext
 
         modelBuilder.Entity<Member>(entity =>
         {
-            entity.HasKey(e => e.Id).HasName("PK__Members__3214EC27E1FDA961");
+            entity.HasKey(e => e.Id).HasName("PK__Members__3214EC278DB2409E");
 
             entity.Property(e => e.Id).HasColumnName("ID");
             entity.Property(e => e.ForumId).HasColumnName("ForumID");
@@ -130,9 +130,9 @@ public partial class CodditContext : DbContext
 
         modelBuilder.Entity<Permission>(entity =>
         {
-            entity.HasKey(e => e.Id).HasName("PK__Permissi__3214EC276524F787");
+            entity.HasKey(e => e.Id).HasName("PK__Permissi__3214EC274275EC0B");
 
-            entity.HasIndex(e => e.Title, "UQ__Permissi__2CB664DC0FA561D9").IsUnique();
+            entity.HasIndex(e => e.Title, "UQ__Permissi__2CB664DC3B5DA54A").IsUnique();
 
             entity.Property(e => e.Id).HasColumnName("ID");
             entity.Property(e => e.Title)
@@ -142,7 +142,7 @@ public partial class CodditContext : DbContext
 
         modelBuilder.Entity<Post>(entity =>
         {
-            entity.HasKey(e => e.Id).HasName("PK__Posts__3214EC2796BB7A08");
+            entity.HasKey(e => e.Id).HasName("PK__Posts__3214EC2796FED6C0");
 
             entity.Property(e => e.Id).HasColumnName("ID");
             entity.Property(e => e.Content)
@@ -150,7 +150,7 @@ public partial class CodditContext : DbContext
                 .IsUnicode(false);
             entity.Property(e => e.CreatedAt)
                 .HasDefaultValueSql("(getdate())")
-                .HasColumnType("date");
+                .HasColumnType("datetime");
             entity.Property(e => e.ForumId).HasColumnName("ForumID");
             entity.Property(e => e.Title)
                 .HasMaxLength(50)
@@ -170,7 +170,7 @@ public partial class CodditContext : DbContext
 
         modelBuilder.Entity<Role>(entity =>
         {
-            entity.HasKey(e => e.Id).HasName("PK__Roles__3214EC2733AFF123");
+            entity.HasKey(e => e.Id).HasName("PK__Roles__3214EC2702EB0529");
 
             entity.Property(e => e.Id).HasColumnName("ID");
             entity.Property(e => e.ForumId).HasColumnName("ForumID");
@@ -186,17 +186,17 @@ public partial class CodditContext : DbContext
 
         modelBuilder.Entity<User>(entity =>
         {
-            entity.HasKey(e => e.Id).HasName("PK__Users__3214EC273666CD92");
+            entity.HasKey(e => e.Id).HasName("PK__Users__3214EC274C09013D");
 
-            entity.HasIndex(e => e.Username, "UQ__Users__536C85E4394E26D6").IsUnique();
+            entity.HasIndex(e => e.Username, "UQ__Users__536C85E4D0987AD5").IsUnique();
 
-            entity.HasIndex(e => e.Email, "UQ__Users__A9D10534A798C9E1").IsUnique();
+            entity.HasIndex(e => e.Email, "UQ__Users__A9D105343D6D2E77").IsUnique();
 
             entity.Property(e => e.Id).HasColumnName("ID");
             entity.Property(e => e.BirthDate).HasColumnType("date");
             entity.Property(e => e.CreatedAt)
                 .HasDefaultValueSql("(getdate())")
-                .HasColumnType("date");
+                .HasColumnType("datetime");
             entity.Property(e => e.Email)
                 .HasMaxLength(100)
                 .IsUnicode(false);
@@ -216,7 +216,7 @@ public partial class CodditContext : DbContext
 
         modelBuilder.Entity<Vote>(entity =>
         {
-            entity.HasKey(e => e.Id).HasName("PK__Vote__3214EC27834C411C");
+            entity.HasKey(e => e.Id).HasName("PK__Vote__3214EC275D8D184F");
 
             entity.ToTable("Vote");
 

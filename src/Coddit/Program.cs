@@ -71,6 +71,7 @@ builder.Services.AddTransient<ISecurityService>(
 #region Repositories services
 
 builder.Services.AddScoped<CodditContext>();
+builder.Services.AddTransient<IRepository<Vote>, VoteRepository>();
 builder.Services.AddTransient<IRepository<Post>, PostRepository>();
 builder.Services.AddTransient<IRepository<User>, UserRepository>();
 builder.Services.AddTransient<IRepository<Role>, RoleRepository>();

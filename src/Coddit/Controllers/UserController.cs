@@ -25,15 +25,7 @@ public class UserController : ControllerBase
             messages.Add("User-name already used");
 
         if (messages.Any())
-        {
-            var error = new ErrorData
-            {
-                Messages = messages.ToArray(),
-                Reason = "registration error"
-            };
-
-            return BadRequest(error);
-        }
+            return BadRequest(messages);
 
         var salt = security.GenerateSalt(16);
 
@@ -55,7 +47,7 @@ public class UserController : ControllerBase
         var data = new JWTData()
         {
             UserId = user.Id,
-            JWTCreateAt = DateTime.Now
+            CreateAt = DateTime.Now.ToString()
         };
 
         var token = jwt.GenerateToken(data);
@@ -80,34 +72,18 @@ public class UserController : ControllerBase
             u.Username == userData.Login);
 
         if (user is null)
-        {
-            var error = new ErrorData
-            {
-                Messages = new string[] { "Login is incorrect" },
-                Reason = "Login don't find in database"
-            };
-
-            return BadRequest(error);
-        }
+            return BadRequest(new string[] { "Login is incorrect" });
         
         var hashedPassword = security.HashPassword(userData.Password, user.Salt);
 
         if (hashedPassword != user.Password)
-        {
-            var error = new ErrorData
-            {
-                Messages = new string[] { "Password is incorrect" },
-                Reason = "password didn't match"
-            };
-
-            return BadRequest(error);
-        }
+            return BadRequest(new string[] { "Password is incorrect" });
 
 
         var data = new JWTData()
         {
             UserId = user.Id,
-            JWTCreateAt = DateTime.Now
+            CreateAt = DateTime.Now.ToString()
         };  
 
         var token = jwt.GenerateToken(data);
