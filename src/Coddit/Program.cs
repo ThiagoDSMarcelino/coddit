@@ -70,7 +70,7 @@ builder.Services.AddTransient<ISecurityService>(
 
 #region Repositories services
 
-builder.Services.AddDbContext<CodditContext>(ServiceLifetime.Transient);
+builder.Services.AddDbContext<CodditContext>(ServiceLifetime.Scoped);
 builder.Services.AddTransient<IRepository<Vote>, VoteRepository>();
 builder.Services.AddTransient<IRepository<Post>, PostRepository>();
 builder.Services.AddTransient<IRepository<User>, UserRepository>();
