@@ -73,8 +73,6 @@ export class PostInfoComponent {
       postId: this.post.id
     }
 
-    console.log(false === null)
-
     if (this.post.vote === null) {
       this.service.create(data).subscribe({
         next: () => {
