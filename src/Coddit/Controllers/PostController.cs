@@ -1,4 +1,5 @@
 ﻿using Coddit.Model;
+using Microsoft.Extensions.Hosting;
 
 namespace Coddit.Controllers;
 
@@ -12,6 +13,7 @@ public class PostController : ControllerBase
         [FromBody] CreatePostData data,
         [FromServices] IRepository<Post> postRepo,
         [FromServices] IForumRepository forumRepo,
+        [FromServices] IRepository<Vote> voteRepo,
         [FromServices] ISecurityService securityService)
     {
         var userValidate = await securityService.ValidateUserAsync(data.Token);
@@ -33,15 +35,17 @@ public class PostController : ControllerBase
             Title = data.Title,
             Content = data.Content
         };
-
         await postRepo.Add(newPost);
+
+        var vote = await voteRepo.Get(vote => vote.UserId == user.Id && vote.PostId == newPost.Id);
 
         var result = new PostData()
         {
             Id = newPost.Id,
             Title = newPost.Title,
             Content = newPost.Content,
-            CreateAt = DateTime.Now
+            CreateAt = DateTime.Now,
+            Vote = vote?.Value
         };
 
         return Created("", result);
@@ -51,6 +55,7 @@ public class PostController : ControllerBase
     public async Task<ActionResult<List<PostData>>> GetPostByUser(
         [FromBody] UserData data,
         [FromServices] IMemberRepository memberRepo,
+        [FromServices] IRepository<Vote> voteRepo,
         [FromServices] ISecurityService securityService,
         string q = "")
     {
@@ -69,18 +74,31 @@ public class PostController : ControllerBase
 
         var posts = memberFrom
             .Select(member => member.Forum)
-            .SelectMany(forum => forum.Posts
-                .Select(post => new PostData()
-                {
-                    Id = post.Id,
-                    Title = post.Title,
-                    Content = post.Content,
-                    CreateAt = post.CreatedAt
-                }))
+            .SelectMany(forum => forum.Posts);
+
+        var result = new List<PostData>();
+
+        foreach (var post in posts)
+        {
+            var vote = await voteRepo.Get(vote => vote.UserId == user.Id && vote.PostId == post.Id);
+
+            var postData = new PostData()
+            {
+                Id = post.Id,
+                Title = post.Title,
+                Content = post.Content,
+                CreateAt = post.CreatedAt,
+                Vote = vote?.Value
+            };
+
+            result.Add(postData);
+        }
+
+        result = result
             .OrderByDescending(post => post.CreateAt)
             .ToList();
 
-        return posts;
+        return result;
     }
 
     [HttpPost("vote")]
@@ -113,7 +131,8 @@ public class PostController : ControllerBase
             Id = post!.Id,
             Title = post.Title,
             Content = post.Content,
-            CreateAt = post.CreatedAt
+            CreateAt = post.CreatedAt,
+            Vote = data.Vote
         };
 
         return result;

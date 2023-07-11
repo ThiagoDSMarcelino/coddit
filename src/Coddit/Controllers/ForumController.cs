@@ -86,6 +86,7 @@ public class ForumController : ControllerBase
         string forumTitle,
         [FromBody] UserData data,
         [FromServices] IForumRepository forumRepo,
+        [FromServices] IRepository<Vote> voteRepo,
         [FromServices] ISecurityService securityService)
     {
         var userValidate = await securityService.ValidateUserAsync(data.Token);
@@ -100,6 +101,23 @@ public class ForumController : ControllerBase
         if (forum is null)
             return NotFound();
 
+        var posts = new List<PostData>();
+        foreach (var post in forum.Posts)
+        {
+            var vote = await voteRepo.Get(vote => vote.UserId == user.Id && vote.PostId == post.Id);
+
+            var postData = new PostData()
+            {
+                Id = post.Id,
+                Title = post.Title,
+                Content = post.Content,
+                CreateAt = post.CreatedAt,
+                Vote = vote?.Value
+            };
+
+            posts.Add(postData);
+        }
+
         var result = new ForumPageData
         {
             Forum = new ForumData()
@@ -109,14 +127,7 @@ public class ForumController : ControllerBase
                 IsMember = forum.Members.Any(member => member.UserId == user.Id)
             },
 
-            Posts = forum.Posts
-                .Select(post => new PostData()
-                {
-                    Id = post.Id,
-                    Title = post.Title,
-                    Content = post.Content,
-                    CreateAt = post.CreatedAt
-                })
+            Posts = posts
                 .OrderByDescending(post => post.CreateAt)
                 .ToList()
         };
