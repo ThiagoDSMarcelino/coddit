@@ -1,0 +1,6 @@
+.box {
+    flex-direction: column;
+    background-color: #CCC;
+    border-radius: 5px;
+    padding: 10px 15px;
+}

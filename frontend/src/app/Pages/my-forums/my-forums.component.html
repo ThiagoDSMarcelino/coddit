@@ -1,0 +1,17 @@
+<div class="container">
+    <div class="row justify-content-center gy-4">
+        <div class="mb-4" style="text-align: center;">
+            <h2 *ngIf="!hasCommunities()">
+                You still isn't a member of a community, search for a community that you like<br>
+                <a href="/newforums">Go discovery a forum suits you</a> 😉
+            </h2>
+            <h2 *ngIf="hasCommunities()">
+                Your forums
+            </h2>
+        </div>
+        
+        <div class="col-8" *ngFor="let forum of forums; let i = index">
+            <app-forum-info [forum]="forum" [isMyForumsPage]="true" />
+        </div>
+    </div>
+</div>

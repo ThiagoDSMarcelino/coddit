@@ -1,0 +1,35 @@
+<form class="container p-4 g-3" (keydown.enter)="$event.preventDefault()">
+    <div class="row g-3 justify-content-center">
+        <div class="col-7">
+            <label for="login" class="form-label">Username / E-mail</label>
+            <input type="text" class="form-control" id="login" placeholder="Example / example@email.com" [(ngModel)]="Login"
+                [ngModelOptions]="{standalone: true}" autocomplete="username">
+        </div>
+
+        <div class="col-7">
+            <label for="password" class="form-label">Password</label>
+            <input type="password" class="form-control" id="password" placeholder="********" [(ngModel)]="Password"
+                [ngModelOptions]="{standalone: true}" autocomplete="current-password">
+        </div>
+
+        <div class="col-7" *ngIf="HasError()">
+            <ul class="errors-box">
+                <li class="error" *ngFor="let error of Errors; let i = index">
+                    {{error}}
+                </li>
+            </ul>
+        </div>
+
+        <div class="col-7">
+            <button class="btn btn-primary" type="button" (click)="SubmitForm()">
+                Sign In
+            </button>
+            <span class="text-link">
+                Don't have an account?
+                <a href="/signup">
+                    Sign Up
+                </a>
+            </span>
+        </div>
+    </div>
+</form>

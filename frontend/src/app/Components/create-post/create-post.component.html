@@ -1,0 +1,55 @@
+<button type="button" class="btn btn-primary btn-lg" data-bs-toggle="modal" data-bs-target="#create-forum-modal">
+    Create post
+</button>
+
+<div class="modal fade" id="create-forum-modal" tabindex="-1" aria-labelledby="create-forum-modal" aria-hidden="true"
+    data-bs-backdrop="static" data-bs-keyboard="false">
+    <div class="modal-dialog modal-dialog-centered modal-lg">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h1 class="modal-title fs-5" id="create-forum-modal">Create forum</h1>
+                <button type="button" class="btn-close" id="close-modal" data-bs-dismiss="modal"
+                    aria-label="Close"></button>
+            </div>
+            
+            <div class="modal-body">
+                <div class="container p-4 g-3">
+                    <div class="row g-3 justify-content-center">
+                        <div class="col-7">
+                            <label for="title" class="form-label">Title</label>
+                            <input type="text" class="form-control" id="title" placeholder="Why I hate Java so much?"
+                                [(ngModel)]="title" [ngModelOptions]="{standalone: true}">
+                        </div>
+
+                        <div class="col-7">
+                            <label for="content" class="form-label">Content</label>
+                            <textarea class="form-control" id="content" rows="2"
+                                placeholder="Just to start, for each every single property I need to create a get and set method..."
+                                [(ngModel)]="content" [ngModelOptions]="{standalone: true}">
+                            </textarea>
+                        </div>
+
+                        <div class="col-7">
+                            <label for="file" class="form-label">File</label>
+                            <input type="file" class="form-control" id="file">
+                            <div class="form-text">
+                                If you want, put an image to exemplify what you are saying
+                            </div>
+                        </div>
+
+                        <div class="col-7" *ngIf="hasError()">
+                            <ul class="errors-box">
+                                <li class="error" *ngFor="let error of errors">
+                                    {{error}}
+                                </li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-success" (click)="submitForm()">Create</button>
+            </div>
+        </div>
+    </div>
+</div>

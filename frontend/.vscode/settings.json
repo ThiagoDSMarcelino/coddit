@@ -1,0 +1,21 @@
+{
+    "cSpell.words": [
+        "Coddit",
+        "IJWT",
+        "myforums",
+        "newforums",
+        "Securitas",
+        "signin",
+        "userforums"
+    ],
+    "cSpell.ignorePaths": [
+        "package-lock.json",
+        "node_modules",
+        "vscode-extension",
+        ".git/objects",
+        ".vscode",
+        ".vscode-insiders",
+        "README.md",
+        "CodditContext.cs"
+    ]
+}

@@ -1,0 +1,28 @@
+<div class="box">
+    <h5>{{post.title}}</h5>
+
+    <p style="word-wrap: break-word;">
+        {{mainText()}}
+        <span [hidden]="isHidden">
+            {{hiddenText()}}
+        </span>
+    </p>
+
+    <div class="vote-box">
+        <button (click)="vote(true)" [disabled]="disabledButton">
+            <i class="fa-{{hasUpVote()}} fa-thumbs-up" style="color: green;"></i>
+        </button>
+
+        <button (click)="vote(false)" [disabled]="disabledButton">
+            <i class="fa-{{hasDownVote()}} fa-thumbs-up fa-flip-vertical" style="color: red;"></i>
+        </button>
+    </div>
+
+    <span class="timeSpanText">
+        {{getTime()}}
+    </span>
+
+    <button class="btn btn-secondary btn-sm custom-btn" (click)="ToggleText()" *ngIf="hasHiddenText()">
+        Show {{buttonText}}
+    </button>
+</div>
